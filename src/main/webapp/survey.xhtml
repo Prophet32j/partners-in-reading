@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/templates/home-template.xhtml">
+
+    <ui:define name="htmlHead">
+        <title>Partners in Reading - Student Survey</title>
+        <h:outputStylesheet library="css" name="survey.css" />
+        <style>
+            .checks td {
+                text-align: left;
+            }
+            .bold {
+                font-weight: bold;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="content">
+               
+        <center><h3>Partners in Reading</h3></center>
+        <div id="homePage">
+            <center><h2>Partners in Reading Survey</h2></center>
+            <hr/><br />
+        <h:form>
+            <h:outputLabel class="bold" value="What category does your major fall under:"/><br/>
+            <h:selectOneMenu id="major" value="#{surveyController.survey.questionOne}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem itemLabel="Early Childhood Education" itemValue="Early Childhood Education" />
+                <f:selectItem itemLabel="Elementary Education" itemValue="Elementary Education" />
+                <f:selectItem itemLabel="Secondary Education" itemValue="Secondary Education" />
+                <f:selectItem itemLabel="Special Education" itemValue="Special Education" />
+                <f:selectItem itemLabel="Science/Technology" itemValue="Science/Technology" />
+                <f:selectItem itemLabel="Liberal Arts" itemValue="Liberal Arts" />
+                <f:selectItem itemLabel="Business" itemValue="Business" />
+                <f:selectItem itemLabel="Fine Arts" itemValue="Fine Arts" />
+                <f:selectItem itemLabel="Language Arts" itemValue="Language Arts" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="How did you hear about the program? "/>
+            <h:outputLabel value="Choose all that apply"/>
+            <h:selectManyCheckbox id="hearAbout" styleClass="checks"  layout="pageDirection" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionTwo}">
+                <f:selectItem id="hearAbout1" itemLabel="A Friend/ Other College Student" itemValue="A Friend/ Other College Student" />
+                <f:selectItem id="hearAbout2" itemLabel="Previous participation in the program" itemValue="Previous participation in the program" />
+                <f:selectItem id="hearAbout3" itemLabel="Professors" itemValue="Professors" />
+                <f:selectItem id="hearAbout4" itemLabel="On-campus or other organizations" itemValue="On-campus or other organizations" />
+                <f:selectItem id="hearAbout5" itemLabel="Library informational flyer" itemValue="Library informational flyer" />
+                <f:selectItem id="hearAbout6" itemLabel="Library Website" itemValue="Library Website" />
+                <f:selectItem id="hearAbout7" itemLabel="Library Newsletter" itemValue="Library Newsletter" />
+                <f:selectItem id="hearAbout8" itemLabel="Newspaper" itemValue="Newspaper" />
+                <f:selectItem id="hearAbout9" itemLabel="Local television" itemValue="Local television" />
+            </h:selectManyCheckbox>
+            <br/>
+
+            <h:outputLabel class="bold" value="How many semesters have you participated:"/><br/>
+            <h:selectOneMenu id="semPart" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionThree}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="semPart1" itemLabel="One" itemValue="One" />
+                <f:selectItem id="semPart2" itemLabel="Two" itemValue="Two" />
+                <f:selectItem id="semPart3" itemLabel="Three" itemValue="Three" />
+                <f:selectItem id="semPart4" itemLabel="Four" itemValue="Four" />
+                <f:selectItem id="semPart5" itemLabel="Five" itemValue="Five" />
+                <f:selectItem id="semPart6" itemLabel="Six" itemValue="Six" />
+                <f:selectItem id="semPart7" itemLabel="Seven" itemValue="Seven" />
+                <f:selectItem id="semPart8" itemLabel="Eight" itemValue="Eight" />
+                <f:selectItem id="semPart9" itemLabel="More than eight" itemValue="More than eight" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="Why did you join Partners in Reading? "/>
+            <h:outputLabel value="Choose all that apply"/>
+            <h:selectManyCheckbox id="whyJoined" styleClass="checks" layout="pageDirection" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionFour}">
+                <f:selectItem id="whyJoined1" itemLabel="Needed volunteer hours" itemValue="Needed volunteer hours" />
+                <f:selectItem id="whyJoined2" itemLabel="Class assignment/credit" itemValue="Class assignment/credit" />
+                <f:selectItem id="whyJoined3" itemLabel="Like children" itemValue="Like children" />
+                <f:selectItem id="whyJoined4" itemLabel="Thought it would be a good experience for my future career" itemValue="Thought it would be a good experience for my future career" />
+                <f:selectItem id="whyJoined5" itemLabel="A friend or classmate was doing it" itemValue="A friend or classmate was doing it" />
+            </h:selectManyCheckbox>
+            <br/>
+
+            <h:outputLabel class="bold" value="Would you recommend Partners in Reading to someone else?"/><br/>
+            <h:selectOneMenu id="recommendYN" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionFive}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="recommendYN1" itemLabel="Yes, to anyone and everyone!" itemValue="Yes, to anyone and everyone!" />
+                <f:selectItem id="recommendYN2" itemLabel="Yes, if someone needed it for class or volunteer hours" itemValue="Yes, if someone needed it for class or volunteer hours" />
+                <f:selectItem id="recommendYN3" itemLabel="No, I wouldn't recommend it" itemValue="No, I wouldn't recommend it" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="Do you plan to participate in Partners in Reading next semester?"/><br/>
+            <h:selectOneMenu id="partNxtSem" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionSix}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="partNxtSem1" itemLabel="Yes" itemValue="Yes" />
+                <f:selectItem id="partNxtSem2" itemLabel="Maybe" itemValue="Maybe" />
+                <f:selectItem id="partNxtSem3" itemLabel="No, because I'm student teaching" itemValue="No, because I'm student teaching" />
+                <f:selectItem id="partNxtSem4" itemLabel="No, because I'm studying abroad" itemValue="No, because I'm studying abroad" />
+                <f:selectItem id="partNxtSem5" itemLabel="No, because the program conflicts with my schedule" itemValue="No, because the program conflicts with my schedule" />
+                <f:selectItem id="partNxtSem6" itemLabel="No, because I'm too busy" itemValue="No, because I'm too busy" />
+                <f:selectItem id="partNxtSem7" itemLabel="No, because I'm graduating" itemValue="No, because I'm graduating" />
+                <f:selectItem id="partNxtSem8" itemLabel="No, because I disliked the experience" itemValue="No, because I disliked the experience" />
+                <f:selectItem id="partNxtSem9" itemLabel="No, for other reasons" itemValue="No, for other reasons" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="How would you summarize your experience?"/><br/>
+            <h:selectOneMenu id="sumExp" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionSeven}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="sumExp1" itemLabel="Very rewarding" itemValue="Very rewarding" />
+                <f:selectItem id="sumExp2" itemLabel="Moderately enjoyable" itemValue="Moderately enjoyable" />
+                <f:selectItem id="sumExp3" itemLabel="Did not meet my expectations" itemValue="Did not meet my expectations" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="Did you ever have any problems with your partner? "/>
+            <h:outputLabel value="Choose all that apply"/><br/>
+            <h:selectManyCheckbox id="probPart" styleClass="checks" layout="pageDirection" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionEight}">
+                <f:selectItem id="probPart1" itemLabel="No" itemValue="No" />
+                <f:selectItem id="probPart2" itemLabel="Yes, my partner missed many sessions but told me they would be missing" itemValue="Yes, my partner missed many sessions but told me they would be missing" />
+                <f:selectItem id="probPart3" itemLabel="Yes, my partner often missed sessions and forgot to tell me they would be missing" itemValue="Yes, my partner often missed sessions and forgot to tell me they would be missing" />
+                <f:selectItem id="probPart4" itemLabel="Yes, my partner was often late" itemValue="Yes, my partner was often late" />
+                <f:selectItem id="probPart5" itemLabel="Yes, my partner often misbehaved" itemValue="Yes, my partner often misbehaved" />
+                <f:selectItem id="probPart6" itemLabel="Yes, my partner wanted to do homework during our session" itemValue="Yes, my partner wanted to do homework during our session" />
+            </h:selectManyCheckbox>
+            <br/>
+
+            <h:outputLabel class="bold" value="How organized do you feel the program was: "/><br/>
+            <h:selectOneMenu id="orgPro" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionFifteen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="orgPro1" itemLabel="Very" itemValue="Very" />
+                <f:selectItem id="orgPro2" itemLabel="Moderately" itemValue="Moderately" />
+                <f:selectItem id="orgPro3" itemLabel="Poorly" itemValue="Poorly" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="How well do you feel your orientation prepared you for Partners in Reading: "/><br/>
+            <h:selectOneMenu id="prepared" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionSixteen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="prepared1" itemLabel="Very well" itemValue="Very well" />
+                <f:selectItem id="prepared2" itemLabel="Moderately well" itemValue="Moderately well" />
+                <f:selectItem id="prepared3" itemLabel="Poorly" itemValue="Poorly" />
+                <f:selectItem id="prepared4" itemLabel="I didn't go to orientation" itemValue="I didn't go to orientation" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="Did the tour during your orientation help you to find library resources during your reading sessions: "/><br/>
+            <h:selectOneMenu id="libRes" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionSeventeen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="libRes1" itemLabel="Yes, it was easy to find what I was looking for" itemValue="Yes, it was easy to find what I was looking for" />
+                <f:selectItem id="libRes2" itemLabel="Yes, but I had to ask where to find a few things" itemValue="Yes, but I had to ask where to find a few things" />
+                <f:selectItem id="libRes3" itemLabel="No, I was totally lost" itemValue="No, I was totally lost" />
+            </h:selectOneMenu>
+            <br/><br/>
+
+            <h:outputLabel class="bold" value="Did you drive to Partners in Reading: "/><br/>
+            <h:selectOneMenu id="drive" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionEighteen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="drive1" itemLabel="Yes, and I had no problem with parking" itemValue="Yes, and I had no problem with parking" />
+                <f:selectItem id="drive2" itemLabel="Yes, and I had a bit of a problem with parking" itemValue="Yes, and I had a bit of a problem with parking" />
+                <f:selectItem id="drive3" itemLabel="Yes, and I really struggled with parking" itemValue="Yes, and I really struggled with parking" />
+                <f:selectItem id="drive4" itemLabel="No, I did not drive" itemValue="No, I did not drive" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h4>How Well Were the Following Goals for the program met?</h4>
+            
+            <h:outputLabel value="Feeling like you've made an impact: "/><br/>
+            <h:selectOneMenu id="impact" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionNine}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="impact1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="impact2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="impact3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h:outputLabel value="Finding books you like to read: "/><br/>
+            <h:selectOneMenu id="bookFind" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionTen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="bookFind1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="bookFind2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="bookFind3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h:outputLabel value="Improving your ability to work with children: "/><br/>
+            <h:selectOneMenu id="workWKids" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionEleven}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="workWKids1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="workWKids2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="workWKids3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h:outputLabel value="Friendly atmosphere: "/><br/>
+            <h:selectOneMenu id="friAtm" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionTwelve}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="friAtm1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="friAtm2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="friAtm3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h:outputLabel value="Enjoyable sessions: "/><br/>
+            <h:selectOneMenu id="enjSess" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionThirteen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="enjSess1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="enjSess2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="enjSess3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+            
+            <h:outputLabel value="Familiarizing yourself with the resources of the library: "/><br/>
+            <h:selectOneMenu id="famRes" required="true" requiredMessage="This Field Must Be Filled Out" value="#{surveyController.survey.questionFourteen}">
+                <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                <f:selectItem id="famRes1" itemLabel="Better than expected" itemValue="Better than expected" />
+                <f:selectItem id="famRes2" itemLabel="As well as expected" itemValue="As well as expected" />
+                <f:selectItem id="famRes3" itemLabel="Not as well as expected" itemValue="Not as well as expected" />
+            </h:selectOneMenu>
+            <br/><br/>
+        
+            <h:outputLabel class="bold" value="Do you have any suggestions for how to make orientation better?"/><br/>
+            <h:inputTextarea id="sugestions" style="margin: 2px; width: 434px; height: 137px;" value="#{surveyController.survey.questionNineteen}"/>
+            <br/><br/>
+            
+            <h:outputLabel class="bold" value="We really appreciate your input on Partners in Reading. Please let us know any thoughts that you have on the program."/><br/>
+            <h:inputTextarea id="thoughts" style="margin: 2px; width: 434px; height: 137px;" value="#{surveyController.survey.questionTwenty}"/>
+            <br/>
+            
+            <h:commandButton id="submitButton" value="Sumbit" action="#{surveyController.sendSurveyResults()}"/>
+          </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

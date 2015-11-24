@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/front_desk-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Front Desk: User Search</title>
+        <h:outputStylesheet library="css" name="register.css" />
+        <h:outputScript library="js" name="jquery-1.8.2.min.js" />
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+            });
+        </script>
+        <style>
+            .view td {
+                vertical-align: top;
+                padding-left: 5px;
+                
+            }
+            .inline td,th{
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            #dirlink {
+                font-size: 115%;
+            }
+            #directions {
+                display: none;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="query" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="checkin" action="checkin?faces-redirect=true" label="Check In Session" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" label="Reports" action="report?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="query" label="Query Users" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Search Users</h3>
+        </center>
+        <p>
+            <a id="dirlink" href="#"><b>Click For Directions</b></a>
+            <div id="directions">
+                1. Enter a keyword to search on<br/>
+                2. Student and Child users will populate in the tables<br/>
+                3. Click on the <b>Details</b> link to view full user information
+            </div>
+        </p>
+        <center>
+        <h:form id="searchform">
+            <h:panelGrid id="searchtable" columns="2">
+                <h:outputLabel id="label" value="Enter Search Word:" for="input" />
+                <h:inputText id="input" value="#{adminQuery.criteria}"></h:inputText>
+            </h:panelGrid>
+            <h:commandButton value="Search"  >
+                <a4j:actionListener listener="#{adminQuery.search}" />
+                <f:ajax render="tables" execute="input"/>
+            </h:commandButton>
+            <br/>
+            <a4j:outputPanel id="tables" ajaxRendered="true">
+                <h:panelGrid columns="1" styleClass="view" >
+                    <h:outputText id="studentlabel" value="Students" styleClass="inline" rendered="#{not empty adminQuery.students}"/>
+
+                    <h:dataTable id="studenttable" value="#{adminQuery.students}" var="s" 
+                                 border="1" styleClass="inline" rendered="#{not empty adminQuery.students}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{s.email}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Last Name" />
+                            </f:facet>
+                            <h:outputText value="#{s.lastname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="First Name" />
+                            </f:facet>
+                            <h:outputText value="#{s.firstname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cell Phone" />
+                            </f:facet>
+                            <h:outputText value="#{s.cellphone}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions" />
+                            </f:facet>
+                            <h:commandLink value="View" action="#{studentViewer.view(s.email)}" id="detailslink" target="_blank"/>
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+                    
+                    <h:outputText id="childlabel" value="Children" styleClass="inline" rendered="#{not empty adminQuery.children}" />
+                    <h:dataTable id="childtable" value="#{adminQuery.children}" var="c"
+                                 border="1" styleClass="inline" rendered="#{not empty adminQuery.children}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{c.email}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Last Name" />
+                            </f:facet>
+                            <h:outputText value="#{c.lastname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="First Name" />
+                            </f:facet>
+                            <h:outputText value="#{c.firstname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cellphone" />
+                            </f:facet>
+                            <h:outputText value="#{c.cellphone}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions" />
+                            </f:facet>
+                            <h:commandLink value="View" action="#{childViewer.view(c.childID)}" id="detailslink" target="_blank" />
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGrid>
+            </a4j:outputPanel>
+        </h:form>
+        </center>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - View Schedule</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="schedule" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" label="Manage Pairs" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" action="pairing?faces-redirect=true" label="Pair Partners" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+        <center>
+            <h3>View Partner Pairs</h3>
+            <h:outputText value="No Pairs to Display" rendered="#{empty adminSchedule.seslist}"/>
+            <h:dataTable value="#{adminSchedule.seslist}" var="sess" rendered="#{not empty adminSchedule.seslist}"
+                         border="1" cellpadding="2" cellspacing="2" style="text-align: center">
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Student"/>
+                    </f:facet>
+                    <h:commandLink style="font-size: 110%" value="#{sess.student.firstname} #{sess.student.lastname}" 
+                                   action="#{studentViewer.view(sess.student.email)}" target="_blank"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Child"/>
+                    </f:facet>
+                    <h:commandLink style="font-size: 110%" value="#{sess.child.firstname} #{sess.child.lastname}" 
+                                   action="#{childViewer.view(sess.child.childID)}" target="_blank"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Session Day"/>
+                    </f:facet>
+                    <h:outputText value="#{sess.day}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Session Time"/>
+                    </f:facet>
+                    <h:outputText value="#{sess.hour}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Remove Pair"/>
+                    </f:facet>
+                    <a4j:commandButton value="Unpair" action="#{adminSchedule.delete(sess)}" render="@form" 
+                                       onclick="return confirm('You are about to remove a pairing\nPress Ok to confirm')"/>
+                </h:column>
+            </h:dataTable>
+        </center>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

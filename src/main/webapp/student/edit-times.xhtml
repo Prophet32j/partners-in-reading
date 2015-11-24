@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/home-template.xhtml"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Student Availability</title>
+<!--        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+            $(document).ready(function() {
+            });
+        </script>-->
+        <style>
+            .table {
+                border: 1px solid #AFAFAF;
+            }
+            .table td {
+                /*text-align: center;*/
+                vertical-align: top;
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+            ul {
+                padding-left: 25px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="avail">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="dash" label="Dashboard" action="dashboard?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" action="orientation?faces-redirect=true" label="Orientation" mode="server" rendered="#{not student.ortn_complete}"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" label="Update Availability" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" action="request-partner?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" action="attendance?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+    
+    <ui:define name="content">
+        <center>
+            <h3>My Availability</h3>
+        </center>
+        <p>
+                1. Select a day from the list of days.<br/>
+                2. Select available times for that day<br/>
+                3. Click <b>Add Day</b> to add your day and times to your availability<br/>
+                4. You may add as many days as you would like<br/>
+                5. To edit a day, click on that day and your selections will appear. Repeat above steps.<br/>
+                6. <b>**NOTICE**</b>  If you have a requested child, <b>DO NOT</b> enter the agreed upon time slot in your availability<br/>
+                7. Click <b>Finished</b> once you are done 
+        </p>
+        <center>
+        <h:form>
+            <a4j:region>
+                <table class="table">
+                    <thead>
+                        <th>
+                            <h:outputText value="Select Day" />
+                        </th>
+                        <th>
+                            <h:outputText value="Select Hours" />
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h:selectOneListbox size="7" value="#{studentTimes.day}" id="day">
+                                    <f:selectItems value="#{constants.days}" />
+                                    <f:ajax listener="#{studentTimes.changeDay()}" event="change" execute="@this" render="hrbox" />
+                                </h:selectOneListbox>
+                            </td>
+                            <td>
+                                <center>
+                                <h:selectManyCheckbox id="hrbox" value="#{studentTimes.chosenHours}" layout="pageDirection" >
+                                    <f:selectItems value="#{constants.hours}" />
+                                </h:selectManyCheckbox>
+                                </center>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <center>
+                                <a4j:commandButton value="Add Day" id="addbutton" action="#{studentTimes.addDay()}" render="@form" />
+                                <a4j:commandButton value="Remove Day" id="removebutton" action="#{studentTimes.removeDay()}" render="@form"/>
+                                </center>
+                            </td>
+                            
+                        </tr>
+                    </tbody>
+                </table>   
+                Current Days and Times:
+            <table class="times">
+                <tr>
+                    <a4j:repeat value="#{studentTimes.daymap.keySet().toArray()}" var="keys">
+                        <th>
+                        <h:outputText value="#{keys}"/>
+                        </th>
+                    </a4j:repeat>
+                </tr>
+                <tr>
+                    <a4j:repeat value="#{studentTimes.daymap.keySet().toArray()}" var="key">
+                        <td style="text-align: center;">
+                        <ui:repeat value="#{studentTimes.daymap[key]}" var="list">
+
+                                <h:outputText value="#{list}"/><br/>
+                        </ui:repeat>
+                        </td>
+                    </a4j:repeat>
+                </tr>
+            </table>
+        </a4j:region>
+            <h:messages />
+            <br/>
+            <h:commandButton value="Finished" action="#{studentTimes.finished()}" />
+            <a4j:commandButton value="Reset" action="#{studentTimes.reset()}"/>
+        </h:form>
+        </center>
+        
+    </ui:define>
+
+</ui:composition>

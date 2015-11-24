@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:rich="http://richfaces.org/rich"
+                template="./../resources/templates/home-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Child Availability</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+            });
+        </script>
+        <style>
+            .table {
+                border: 1px solid #AFAFAF;
+            }
+            .table td {
+                /*text-align: center;*/
+                vertical-align: top;
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+            ul {
+                padding-left: 25px;
+            }
+            #dirlink {
+                font-size: 115%;
+            }
+            #directions {
+                display: none;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="avail" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" label="Dashboard" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="family" label="Manage Family" action="manage-family?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" id="updStu" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availChild" label="Update Availability" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+    <ui:define name="content">
+        <center>
+            <h3>My Child's Availability</h3>
+        </center>
+        <p>
+            1. Select a child from the drop down list
+            2. Select a day from the list of days.<br/>
+            3. Select available times for that day<br/>
+            4. Click <b>Add Day</b> to add your day and times to your availability<br/>
+            5. You may add as many days as you would like<br/>
+            To edit a day, click on that day and your selections will appear. Repeat above steps.<br/>
+            6. Click <b>Finished</b> once you are done 
+        </p>
+        <center>
+            <br/>
+            <h:form>
+                <a4j:region>
+                    <center>
+                        <h:panelGrid id="select" columns="2">
+                            <h:outputLabel value="Select Child:"/>
+                            <h:selectOneMenu value="#{childTimes.selectedChild}" >
+                                <f:selectItem itemLabel="Select Child" noSelectionOption="true" />
+                                <f:selectItems value="#{childTimes.children}" />
+                                <a4j:ajax event="change" execute="@this" render="@form" listener="#{childTimes.changeChild()}" />
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                    </center>
+                    <br/>
+                    <h:panelGroup id="edit" rendered="#{childTimes.selectedChild ne -1}">
+                    <table class="table">
+                        <thead>
+                            <th>
+                                <h:outputText value="Select Day" />
+                            </th>
+                            <th>
+                                <h:outputText value="Select Hours" />
+                            </th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h:selectOneListbox size="7" value="#{childTimes.day}" id="day">
+                                        <f:selectItems value="#{constants.days}" />
+                                        <f:ajax listener="#{childTimes.changeDay()}" event="change" execute="@this" render="hrbox" />
+                                    </h:selectOneListbox>
+                                </td>
+                                <td>
+                                    <center>
+                                        <h:selectManyCheckbox id="hrbox" value="#{childTimes.chosenHours}" layout="pageDirection" >
+                                            <f:selectItems value="#{constants.hours}" />
+                                        </h:selectManyCheckbox>
+                                    </center>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <center>
+                                        <a4j:commandButton value="Add Day" id="addbutton" actionListener="#{childTimes.addDay()}" render="@form" />
+                                        <a4j:commandButton value="Remove Day" id="removebutton" actionListener="#{childTimes.removeDay()}" render="@form"/>
+                                    </center>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                    Current Days and Times:
+                    <table class="times">
+                        <tr>
+                            <a4j:repeat value="#{childTimes.daymap.keySet().toArray()}" var="keys">
+                                <th>
+                                    <h:outputText value="#{keys}"/>
+                                </th>
+                            </a4j:repeat>
+                        </tr>
+                        <tr>
+                            <a4j:repeat value="#{childTimes.daymap.keySet().toArray()}" var="key">
+                                <td style="text-align: center;">
+                                    <ui:repeat value="#{childTimes.daymap[key]}" var="list">
+
+                                        <h:outputText value="#{list}"/><br/>
+                                    </ui:repeat>
+                                </td>
+                            </a4j:repeat>
+                        </tr>
+                    </table>
+                    </h:panelGroup>
+                </a4j:region>
+                <h:outputText value="#{childTimes.notComplete}" style="color:red" />
+                <br/>
+                <a4j:commandButton value="Finished" action="#{childTimes.finished()}" rendered="#{childTimes.selectedChild ne -1}"
+                                   render="@form" oncomplete="alert('Update Complete!')" />
+            </h:form>
+        </center>
+
+    </ui:define>
+
+</ui:composition>

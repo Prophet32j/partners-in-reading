@@ -1,0 +1,17 @@
+.menu {
+    width: 136px;
+    text-align: left;
+    border-collapse: separate;
+}
+
+.menu table, .menu td {
+    text-align: left;
+    padding-left: 0px;
+    padding-right: 0px;
+    font-size: 98%;
+}
+
+*.rf-pm-top-itm-sel {
+    background-color: #F1EEE9;
+}
+

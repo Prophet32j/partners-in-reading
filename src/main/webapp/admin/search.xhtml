@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - User Search</title>
+        <h:outputStylesheet library="css" name="register.css" />
+        <!--<h:outputStylesheet library="css" name="search.css" />-->
+        <h:outputScript library="js" name="jquery-1.8.2.min.js" />
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+            });
+            
+            function confirmDelete() {
+                return confirm("Permanently delete this Student/Child?");
+            }
+            
+            function deleteSuccess() {
+                alert("Student/Child deleted!");
+            }
+            function confirmReset() {
+                return confirm("Click Ok to reset password");
+            }
+            function resetSuccess() {
+                alert("Password reset!\nA password-reset email has been sent to the user.\n" + 
+                        "Please follow the directions in the email.");
+            }
+            function checkAndConfirm(type) {
+                if (type === 'a' || type === 'f') {
+                    alert("Can't Delete Admin or FrontDesk Accounts");
+                    return false;
+                }
+                return confirm("Permanently delete User?");   
+            }
+        </script>
+        <style>
+            .actions li {
+                display: inline;
+            }
+            .actions {
+                padding: 0px;
+                margin: 0px;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="query" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" label="Manage Users" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" action="pairing?faces-redirect=true" label="Pair Partners" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Manage Users</h3>
+        </center>
+        <p>
+            <a id="dirlink" href="#"><b>Click For Directions</b></a>
+            <div id="directions">
+                1. Enter a keyword to search on<br/>
+                2. Student and Child users will populate in the tables<br/>
+                3. Click on the <b>Details</b> link to view full user information
+            </div>
+        </p>
+        <center>
+        <h:form id="searchform">
+            <h:panelGrid id="searchtable" columns="2">
+                <h:outputLabel id="label" value="Enter Search Word:" for="input" />
+                <h:inputText id="input" value="#{adminQuery.criteria}"></h:inputText>
+            </h:panelGrid>
+            <h:commandButton value="Search">
+                <a4j:actionListener listener="#{adminQuery.search}" />
+                <f:ajax render="tables" execute="input"/>
+            </h:commandButton>
+            <br/><br/>
+            <a4j:outputPanel id="tables" ajaxRendered="true">
+                <h:panelGrid columns="1" styleClass="view" >
+                    <h:outputText id="studentlabel" value="Students" styleClass="inline" rendered="#{not empty adminQuery.students}"/>
+                    <h:dataTable id="studenttable" value="#{adminQuery.students}" var="s" 
+                                 border="1" styleClass="inline" rendered="#{not empty adminQuery.students}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{s.email}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Last Name" />
+                            </f:facet>
+                            <h:outputText value="#{s.lastname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="First Name" />
+                            </f:facet>
+                            <h:outputText value="#{s.firstname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cell Phone" />
+                            </f:facet>
+                            <h:outputText value="#{s.cellphone}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions" />
+                            </f:facet>
+                            <ul class="actions">
+                                <li><h:commandLink value="View" action="#{studentViewer.view(s.email)}" id="detailslink" target="_blank"/> |</li>
+                                <li><h:commandLink value="Edit" action="#{adminEdit.editStudent(s.email)}" id="editlink" /> |</li>
+                                <li><a4j:commandLink value="Delete" actionListener="#{adminQuery.clear()}" render="@form" 
+                                                     onclick="return confirmDelete();" oncomplete="deleteSuccess()">
+                                        <a4j:actionListener listener="#{adminEdit.deleteStudent(s.email)}"/>
+                                    </a4j:commandLink> |
+                                </li>
+                                <li><a4j:commandLink value="Reset Password" actionListener="#{adminEdit.resetPassword(s.email)}" onclick="return confirmReset();"
+                                                     oncomplete="resetSuccess()" />
+                                </li>
+                            </ul>
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+                    
+                    <h:outputText id="childlabel" value="Children" styleClass="inline" rendered="#{not empty adminQuery.children}" />
+                    <h:dataTable id="childtable" value="#{adminQuery.children}" var="c"
+                                 border="1" styleClass="inline" rendered="#{not empty adminQuery.children}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Email" />
+                            </f:facet>
+                            <h:outputText value="#{c.email}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Last Name" />
+                            </f:facet>
+                            <h:outputText value="#{c.lastname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="First Name" />
+                            </f:facet>
+                            <h:outputText value="#{c.firstname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Cellphone" />
+                            </f:facet>
+                            <h:outputText value="#{c.cellphone}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions" />
+                            </f:facet>
+                            <ul class="actions">
+                                <li><h:commandLink value="View" action="#{childViewer.view(c.childID)}" id="detailslink" target="_blank" /> |</li>
+                                <li><h:commandLink value="Edit" action="#{adminEdit.editChild(c.childID)}" id="editlink" /> |</li>
+                                <li><a4j:commandLink value="Delete" actionListener="#{adminQuery.clear()}" render="@form" execute="@this"
+                                                     onclick="return confirmDelete();" oncomplete="deleteSuccess()">
+                                        <a4j:actionListener listener="#{adminEdit.deleteChild(c.childID)}"/>
+                                    </a4j:commandLink> |</li>
+                                <li><a4j:commandLink value="Reset Password" actionListener="#{adminEdit.resetPassword(c.email)}" onclick="return confirmReset();"
+                                                     execute="@this" oncomplete="resetSuccess()" />
+                                </li>
+                            </ul>
+                        </h:column>
+                    </h:dataTable>
+                
+                    <br/>
+                
+                    <a4j:commandLink value="Show All Users" action="#{adminQuery.showAllUsers()}" execute="@this" render="@form"/>
+                    <h:panelGroup layout="block" rendered="#{not empty adminQuery.users}" >
+                        <h:outputText value="All Users" />
+                        <h:dataTable value="#{adminQuery.users}" var="u" border="1">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Email" />
+                                </f:facet>
+                                <h:outputText value="#{u.email}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Type" />
+                                </f:facet>
+                                <h:outputText value="Admin" rendered="#{u.acct_type eq 'a'}" />
+                                <h:outputText value="Child" rendered="#{u.acct_type eq 'c'}" />
+                                <h:outputText value="Student" rendered="#{u.acct_type eq 's'}" />
+                                <h:outputText value="Front Desk" rendered="#{u.acct_type eq 'f'}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created" />
+                                </f:facet>
+                                <h:outputText value="#{u.created}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Last Login" />
+                                </f:facet>
+                                <h:outputText value="#{u.last_login}" />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Actions" />
+                                </f:facet>
+                                <ul class="actions">
+                                    <li><a4j:commandLink value="Delete" actionListener="#{adminQuery.clear()}" render="@form" execute="@form"
+                                                         onclick="return checkAndConfirm('#{u.acct_type}');" oncomplete="alert('User Deleted!')">
+                                            <a4j:actionListener listener="#{adminEdit.deleteUser(u.email)}"/>
+                                        </a4j:commandLink> |</li>
+                                    <li><a4j:commandLink value="Reset Password" actionListener="#{adminEdit.resetPassword(u.email)}" onclick="return confirmReset();"
+                                                         oncomplete="resetSuccess()" />
+                                    </li>
+                                </ul>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGroup>
+                </h:panelGrid>
+            </a4j:outputPanel>
+        </h:form>
+        </center>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Admin: Edit Child Details</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+                $('#selection').change(function() {
+                    var select = $(this).val();
+                    if (select === 'Availability') {
+                        $('#details').hide();
+                        $('#availability').show();
+                    } else if (select === 'Details') {
+                        $('#details').show();
+                        $('#availability').hide();
+                    } else {
+                        $('#details').hide();
+                        $('#availability').hide();
+                    }
+                });
+            });
+        </script>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" action="pairing?faces-redirect=true" label="Pair Partners" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Edit Child Account</h3>
+            <label for="selection">Select Option: </label>
+            <select id="selection">
+                <option>Select</option>
+                <option>Availability</option>
+                <option>Details</option>
+            </select>
+        </center>
+        <div id="availability" style="display: none">
+            <p>
+                <a id="dirlink" href="#"><b>Click For Directions</b></a>
+                <div id="directions">
+                    1. Select a day.<br/>
+                    2. Select available times for that day<br/>
+                    3. Click <b>"Add Day"</b> to submit your day and times<br/>
+                    4. You may add as many days as you would like<br/>
+                    To edit a day, click on that day and your selections will appear. Repeat above steps.
+                </div>
+            </p>
+            <center>
+                <h:form id="times_form">
+                    <a4j:region>
+                        <table class="table">
+                            <thead>
+                                <th>
+                                    <h:outputText value="Select Day" />
+                                </th>
+                                <th>
+                                    <h:outputText value="Select Hours" />
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <h:selectOneListbox size="7" value="#{adminEdit.day}" id="day">
+                                            <f:selectItems value="#{constants.days}"/>
+                                            <f:ajax listener="#{adminEdit.changeDay()}" event="change" execute="@this" render="hrbox" />
+                                        </h:selectOneListbox>
+                                    </td>
+                                    <td>
+                                        <center>
+                                        <h:selectManyCheckbox id="hrbox" value="#{adminEdit.chosenHours}" layout="pageDirection" >
+                                            <f:selectItems value="#{constants.hours}" />
+                                        </h:selectManyCheckbox>
+                                        </center>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <center>
+                                        <a4j:commandButton value="Add Day" id="addbutton" action="#{adminEdit.addDay()}" render="@form" />
+                                        <a4j:commandButton value="Remove Day" id="removebutton" action="#{adminEdit.removeDay()}" render="@form"/>
+                                        </center>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>   
+                        <br/>
+                        <span>Current Days and Times:</span>
+                        <table class="times">
+                            <tr>
+                                <a4j:repeat value="#{adminEdit.daymap.keySet().toArray()}" var="keys">
+                                    <th>
+                                    <h:outputText value="#{keys}"/>
+                                    </th>
+                                </a4j:repeat>
+                            </tr>
+                            <tr>
+                                <a4j:repeat value="#{adminEdit.daymap.keySet().toArray()}" var="key">
+                                    <td style="text-align: center;">
+                                    <ui:repeat value="#{adminEdit.daymap[key]}" var="list">
+
+                                            <h:outputText value="#{list}"/><br/>
+                                    </ui:repeat>
+                                    </td>
+                                </a4j:repeat>
+                            </tr>
+                        </table>
+                    </a4j:region>
+                    <a4j:commandButton value="Update" action="#{adminEdit.updateChildAvailability()}"
+                                   render="@form" oncomplete="alert('Update Complete!')" />
+                </h:form>
+            </center>
+        </div>
+        <div id="details" style="display:none">
+            <br/><br/>
+            <center>
+                <h:form id="details_form">
+                    <h:panelGrid columns="2" columnClasses="left_column,right_column">
+                        <h:outputLabel value="First Name: " for="firstname"/>
+                        <h:inputText value="#{adminEdit.child.firstname}" id="firstname"/>
+
+                        <h:outputLabel value="Last Name: " for="lastname"/>
+                        <h:inputText value="#{adminEdit.child.lastname}" id="lastname"/>
+
+                        <h:outputLabel value="Email: " for="email"/>
+                        <h:inputText value="#{adminEdit.child.email}" id="email"/>
+                        
+                        <h:outputLabel value="Gender: " for="gender"/>
+                        <h:selectOneMenu value="#{adminEdit.child.gender}" id="gender">
+                            <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Male" itemValue="m" />
+                            <f:selectItem itemLabel="Female" itemValue="f" />
+                        </h:selectOneMenu>
+                        
+                        <h:outputLabel value="Home Phone: " for="homephone"/>
+                        <h:inputText value="#{adminEdit.child.homephone}" id="homephone"/>
+                        
+                        <h:outputLabel value="Cell Phone: " for="cellphone"/>
+                        <h:inputText value="#{adminEdit.child.cellphone}" id="cellphone"/>
+                        
+                        <h:outputLabel value="Age: " for="age" />
+                        <h:selectOneMenu id="age" value="#{adminEdit.child.age}" >
+                            <f:selectItems value="#{constants.ages}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Grade: " for="grade" />
+                        <h:selectOneMenu value="#{adminEdit.child.grade}" id="grade">
+                            <f:selectItems value="#{constants.grades}" />
+                        </h:selectOneMenu>
+                        
+                        <h:outputLabel value="Primary Parent/Guardian: " for="parent1" />
+                        <h:inputText value="#{adminEdit.child.parent_one}" id="parent1" />
+
+                        <h:outputLabel value="Secondary Parent/Guardian: " for="parent2" />
+                        <h:inputText value="#{adminEdit.child.parent_two}" id="parent2" />
+
+                        <h:outputLabel value="Special Needs: " for="spec_needs" />
+                        <h:selectOneMenu value="#{adminEdit.child.special_needs}" id="spec_needs">
+                            <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Yes" itemValue="true" />
+                            <f:selectItem itemLabel="No" itemValue="false" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Language Needs: " for="lang_needs" />
+                        <h:selectOneMenu value="#{adminEdit.child.language_needs}" id="lang_needs">
+                            <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                            <f:selectItem itemLabel="Yes" itemValue="true" />
+                            <f:selectItem itemLabel="No" itemValue="false" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Personal Notes About Your Child: " />
+                        <h:inputTextarea value="#{adminEdit.child.notes}" id="notes" />
+                    </h:panelGrid>
+                    <a4j:commandButton value="Submit" actionListener="#{adminEdit.updateChild()}"
+                                       oncomplete="alert('Student Updated Successfully')"/>
+                    <h:commandButton value="Cancel" action="search?faces-redirect=true" />
+                </h:form>
+            </center>
+        </div>
+    </ui:define>
+</ui:composition>

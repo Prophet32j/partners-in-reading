@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Admin: Application Settings</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+           function comp(confpass) {
+                var pass = document.getElementById('settings-form:pass').value;
+                var button = document.getElementById('settings-form:button');
+                if (confpass === pass) {
+                    button.disabled = false;
+                    $('#pass_message').hide();
+                }
+                else {
+                    button.disabled = true;
+                    $('#pass_message').show();
+                }
+            }
+            $(document).ready(function() {
+                document.getElementById('settings-form:button').disabled = true;
+                $('#pass_message').hide();
+            }); 
+        </script>
+        <style>
+            .active {
+                color: limegreen;
+                font-weight: bold;
+            }
+            .inactive {
+                color: red;
+                font-weight: bold;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="settings" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" label="Pair Partners" action="pairing?faces-redirect=true" />
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" label="Settings" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Application Settings</h3>
+        </center>
+        
+        <h:form id="settings-form">
+            <center>
+                <h:panelGrid columnClasses="tableLeft,tableRight" columns="2">
+                    <h:outputText value="Registration Status:"/>
+                    <h:panelGroup>
+                        <h:outputText value="Open" rendered="#{adminSettings.settings.registrationOpen}" styleClass="active" />
+                        <h:outputText value="Closed" rendered="#{not adminSettings.settings.registrationOpen}" styleClass="inactive"/>
+                        <a4j:commandButton execute="@this" value="Toggle" action="#{adminSettings.toggleRegistration()}" style="margin-left: 5px" render="@form"/>
+                    </h:panelGroup>
+                    
+
+                    <h:outputLabel value="Select A Date To Edit:" for="date-selecter"/>
+                    <h:selectOneMenu id="date-selecter" value="#{adminSettings.dateSelecter}" >
+                        <f:selectItem itemLabel="Select" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Reg. Suspense Date" itemValue="1"/>
+                        <f:selectItem itemLabel="Program Start Date" itemValue="2"/>
+                        <f:selectItem itemLabel="Program End Date" itemValue="3"/>
+                        <a4j:ajax execute="@this" render="@form" event="change"
+                                  listener="#{adminSettings.changeDateSelected()}"/>
+                    </h:selectOneMenu>
+                    
+                    <h:outputText value="Current Date Selected:" rendered="#{not empty adminSettings.date}"/>
+                    <h:outputText value="#{adminSettings.formatDate()}" rendered="#{not empty adminSettings.date}"/>
+                    
+                    <h:outputLabel value="Change Date To:" style="font-weight: bold" rendered="#{not empty adminSettings.date}"/>
+                    <rich:calendar id="datepicker" value="#{adminSettings.date}" popup="false" 
+                                   showWeeksBar="false" showFooter="false" rendered="#{not empty adminSettings.date}" />
+                </h:panelGrid>
+                
+                <a4j:commandButton value="Submit" render="@form" execute="datepicker" 
+                               action="#{adminSettings.submit()}" />
+                <br/><br/><br/>
+                <hr/>
+                <h4>Change Admin or Front Desk Password</h4>
+                <h:panelGrid columns="2" columnClasses="tableLeft,tableRight">
+                    <h:outputLabel for="user" value="Account:"/>
+                    <h:selectOneMenu id="user" value="#{adminSettings.account}" required="true">
+                        <f:selectItem itemLabel="Select Account" noSelectionOption="true"/>
+                        <f:selectItem itemValue="Admin"/>
+                        <f:selectItem itemValue="FrontDesk"/>    
+                    </h:selectOneMenu>
+                    <h:outputLabel for="pass" value="New Password:"/>
+                    <h:inputSecret required="true" id="pass" value="#{adminSettings.password}"
+                                   requiredMessage="Please enter a password"
+                                   validatorMessage="Password length must be at least 6 characters">
+                        <f:validateLength minimum="6"/>
+                    </h:inputSecret>
+                    
+                    <h:outputLabel value="Confirm Password: " />
+                    <h:inputSecret required="true" id="confpassfield" onkeyup="comp(this.value);" />
+                    
+                </h:panelGrid>
+                <h:outputText value="#{adminSettings.message}" rendered="#{adminSettings.changed}"/>
+                <span style="display: block" id="pass_message" class="required">Passwords do not match</span>
+                <a4j:commandButton id="button" value="Change Password" execute="pass,user" 
+                                   action="#{adminSettings.changePassword()}" />
+            </center>
+        </h:form>
+        
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/child-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Child-Partner Request</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h:panelGrid columns="2" columnClasses="tableLeft,tableRight">
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Select Child:"/>
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{childPartner.childid}" required="true"
+                                     requiredMessage="Please select a child">
+                        <f:selectItems value="#{childPartner.children}"/>
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Student's First Name:"/>
+                    </h:panelGroup>
+                    <h:inputText value="#{childPartner.partner.firstName}" required="true"
+                                 requiredMessage="Please provide a first name"/>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Student's Last Name:"/>
+                    </h:panelGroup>
+                    <h:inputText value="#{childPartner.partner.lastName}" required="true"
+                                 requiredMessage="Please provide a last name"/>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Student's Phone:"/>
+                    </h:panelGroup>
+                    <h:inputText value="#{childPartner.partner.phone}" required="true"
+                                 requiredMessage="Please provide a phone number"/>
+                </h:panelGrid>
+                <span class='required'>* indicates required fields</span><br/>
+                <h:commandButton value="Next" action="#{childPartner.register()}"/>
+                <input type="reset" value="Reset"/>
+                <h:messages id="messages" />
+                
+            </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

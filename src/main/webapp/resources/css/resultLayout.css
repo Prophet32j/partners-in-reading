@@ -1,0 +1,38 @@
+list {
+    list-style: none;
+}
+
+root { 
+    background-image: url("../resources/images/background.png");
+    display: block;
+}
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 13px;
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url("../resources/images/background.png");
+    background-repeat: repeat-y;
+    background-repeat: repeat-x;
+}
+#header {
+    font-family: Copperplate Gothic Bold;
+    text-align: center;
+    border-bottom: solid 1px #C5C8C9;
+    height: 140px;
+}
+
+#content{
+    height: 700px;
+    width: auto;
+    padding-top: 5px;
+    width: auto;
+    background-color: white;   
+    font-family: Tahoma, Geneva, sans-serif;
+    color: black;
+}
+
+table {
+    border-collapse: collapse;
+}

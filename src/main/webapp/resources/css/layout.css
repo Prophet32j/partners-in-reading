@@ -1,0 +1,139 @@
+list {
+    list-style: none;
+}
+
+root { 
+    display: block;
+}
+body {
+    /*background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: top left;*/
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 13px;
+    width: 900px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: url("../resources/images/background.png");
+    background-repeat:  repeat;
+    /*background-repeat: repeat-x;*/
+}
+
+table {
+    text-align: center;
+    border-collapse: collapse
+}
+
+td, th {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+a {
+    font-size: 100%;
+}
+a:active, a:visited, a:link{
+    color: #00BFFF;
+    font-family: calibri;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #FA8E00;
+    text-decoration: underline;
+}
+
+.selected {
+    color: #00BFFF;
+    font-family: calibri;
+    font-weight:bold;
+}
+
+.cols {
+    vertical-align: top;
+    text-align: left;
+}
+
+.left_column {
+    text-align: right;
+}
+
+.right_column {
+    text-align: left;
+}
+
+.tableLeft {
+    text-align: right;
+}
+
+.tableRight {
+    text-align: left;
+}
+
+.required {
+    color: red;
+}
+
+#directions {
+    display: none;
+}
+
+#dirlink {
+    font-size: 115%;
+}
+            
+#footer{
+    font-size: 11px;
+    float:bottom;
+    height: 50px;
+}
+
+#leftNav {
+    float: left;
+    width: 140px;
+    border-right: solid 1px #C5C8C9;
+    border-left: solid 1px #C5C8C9;
+    height: 700px;
+    background-color: white;
+}
+
+#header {
+    font-family: Copperplate Gothic Bold;
+    text-align: center;
+    border-bottom: solid 1px #C5C8C9;
+    height: 140px;
+}
+
+#footer {
+    border-top: solid 1px #C5C8C9;
+    text-align: center;
+    display: inline;
+    height: 100%;
+}
+#student{
+    padding: 5px 5px 5px 5px; 
+}
+#content{
+    height: 700px;
+    width: auto;
+    padding-top: 5px;
+    background-color: white;
+}
+#nplLogo{
+    float: left;
+    width: 188px;
+    height: 140px;
+}
+#container{
+    width: auto;
+    height: auto;
+    background-color: white;
+}
+#headerLogo{
+    float: left;
+}
+#techLogos{
+    float: right;   
+}

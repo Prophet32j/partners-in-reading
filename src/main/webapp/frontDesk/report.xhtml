@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>FrontDesk: Attendance Report</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="report" itemMode="server" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" label="Dashboard" action="dashboard?faces-redirect=true" />
+                    <rich:panelMenuItem leftIcon="disc" name="checkin" label="Check In Session" action="checkin?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="report" label="Reports" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Query Users" mode="server"/>                  
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h3>Student Attendance Reports</h3>
+                
+                <h:panelGrid columns="2" columnClasses="tableLeft, tableRight" >
+                    <h:outputLabel value="Select Student:" for="student" />
+                    <h:selectOneMenu id="student" value="#{reportController.studentid}" >
+                        <f:selectItem itemLabel="Select Student" noSelectionOption="true"/>
+                        <f:selectItems value="#{reportController.students}"
+                                       var="stu" itemValue="#{stu.studentID}"
+                                       itemLabel="#{stu.firstname} #{stu.lastname}"/>
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Select Month:" for="month" />
+                    <h:selectOneMenu id="month" value="#{reportController.month}" >
+                        <f:selectItem itemLabel="Select Month" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="January" itemValue="1" />
+                        <f:selectItem itemLabel="February" itemValue="2" />
+                        <f:selectItem itemLabel="March" itemValue="3" />
+                        <f:selectItem itemLabel="April" itemValue="4" />
+                        <f:selectItem itemLabel="May" itemValue="5" />
+                        <f:selectItem itemLabel="June" itemValue="6" />
+                        <f:selectItem itemLabel="July" itemValue="7" />
+                        <f:selectItem itemLabel="August" itemValue="8" />
+                        <f:selectItem itemLabel="September" itemValue="9" />
+                        <f:selectItem itemLabel="October" itemValue="10" />
+                        <f:selectItem itemLabel="November" itemValue="11" />
+                        <f:selectItem itemLabel="December" itemValue="12" />
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <a4j:commandButton value="Submit" action="#{reportController.submit()}"
+                                    render="@form" />
+                <a4j:commandButton value="Reset" action="#{reportController.reset()}" render="@form" />
+                
+                <h:panelGroup id="results" rendered="#{reportController.month ne 0}" >
+                    <h4>Attendance Roll-up</h4>
+                    <table border="1">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Attendance Count</th>
+                        </tr>
+                        <tr>
+                            <td><h:commandLink 
+                                    value="#{reportController.student.firstname} #{reportController.student.lastname}"
+                                    action="#{studentViewer.view(reportController.student.email)}" target="_blank" />
+                            </td>
+                            <td>
+                                <h:outputText value="#{reportController.count}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </h:panelGroup>
+            </center>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

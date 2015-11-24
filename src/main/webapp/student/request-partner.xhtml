@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/student-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Student-Partner Request</title>
+        <style>
+            .actions li {
+                display: inline;
+            }
+            .actions {
+                padding: 0px;
+                margin: 0px;
+            }
+        </style>
+        <script>
+            function confirmDelete() {
+                return confirm("Permanently delete this request?");
+            }
+            function deleteSuccess() {
+                alert("Request deleted!");
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="partner">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="dash" label="Dashboard" action="dashboard?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" action="orientation?faces-redirect=true" label="Orientation" mode="server" rendered="#{not student.ortn_complete}"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" action="attendance?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h4>My Partner Requests</h4>
+                <h:outputText style="display: block" value="No Requested Partners" rendered="#{empty studentPartner.partners}"/>
+                <h:dataTable value="#{studentPartner.partners}" var="partner" border="1"
+                             rendered="#{not empty studentPartner.partners}">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="First Name"/>
+                        </f:facet>
+                        <h:outputText value="#{partner.firstName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Last Name"/>
+                        </f:facet>
+                        <h:outputText value="#{partner.lastName}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Phone"/>
+                        </f:facet>
+                        <h:outputText value="#{partner.phone}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Actions"/>
+                        </f:facet>
+                        <ul class="actions">
+                            <li><a4j:commandLink value="Delete" action="#{studentPartner.delete(partner)}" execute="@this" render="@form" 
+                                    onclick="return confirmDelete();" oncomplete="deleteSuccess()"/>
+                            </li>
+                        </ul>
+                    </h:column>
+                </h:dataTable>
+                <br/>
+                <a4j:commandLink value="New Partner Request" action="#{studentPartner.newRequest()}" execute="@this" render="@form"/>
+
+                <h:panelGroup layout="block" rendered="#{studentPartner.requesting}">
+                    <h:panelGrid columns="2" columnClasses="tableLeft,tableRight">
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel value="Child's First Name:"/>
+                        </h:panelGroup>
+                        <h:inputText value="#{studentPartner.partner.firstName}" required="true"
+                                     requiredMessage="Please provide last name"/>
+
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel value="Child's Last Name:"/>
+                        </h:panelGroup>
+                        <h:inputText value="#{studentPartner.partner.lastName}" required="true"
+                                     requiredMessage="Please provide last name"/>
+
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel value="Child's Phone:"/>
+                        </h:panelGroup>
+                        <h:inputText value="#{studentPartner.partner.phone}" required="true"
+                                     requiredMessage="Please provide a phone number"
+                                     validator="#{phoneValidator.validatePhone}"/>
+                    </h:panelGrid>
+                    <span class='required'>* indicates required fields</span><br/>
+                    <a4j:commandButton value="Request" action="#{studentPartner.addRequest()}" render="@form"/>
+                    <input type="reset" value="Reset"/>
+                    <h:messages id="messages" />
+                </h:panelGroup>
+            </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/templates/home-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - User Registration</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+           function comp(confpass) {
+                var pass = document.getElementById('reg_form:passfield').value;
+                var button = document.getElementById('reg_form:button');
+                if (confpass === pass) {
+                    button.disabled = false;
+                    $('#pass_message').hide();
+                }
+                else {
+                    button.disabled = true;
+                    $('#pass_message').show();
+                }
+            }
+            $(document).ready(function() {
+                document.getElementById('reg_form:userfield').focus();
+                document.getElementById('reg_form:button').disabled = true;
+                $('#pass_message').hide();
+            }); 
+        </script>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="register">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="login" action="login?faces-redirect=true" label="Sign In" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="register" label="Register" selectable="false"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="reg_form">
+        <center>
+            <h3>User Registration Form</h3>
+            <h:panelGrid columns="2" styleClass="reg_form" columnClasses="tags,inputs">
+                <h:outputLabel value="Email: " for="userfield" />
+                <h:inputText required="true" requiredMessage="Please provide a valid email" 
+                             id="userfield" value="#{userRegistration.newUser.email}" 
+                             validator="#{userValidator.validateEmail}" >
+                    <f:ajax event="blur" render="outuname" />
+                </h:inputText>
+                
+                <h:outputLabel value="Password: " />
+                <h:inputSecret required="true" id="passfield" value="#{userRegistration.newUser.password}"
+                               requiredMessage="Please provide a password"
+                               validatorMessage="Password length must be at least 6 characters">
+                    <f:validateLength minimum="6"/>
+                </h:inputSecret>
+                
+                <h:outputLabel value="Confirm Password: " />
+                <h:inputSecret required="true" id="confpassfield" onkeyup="comp(this.value);" />
+                
+                <h:outputLabel value="Account Type: " />
+                <h:selectOneRadio  id="type" style="text-align: left" value="#{userRegistration.newUser.acct_type}" required="true"
+                                  requiredMessage="Please select your account type" layout="pageDirection" >
+                    <f:selectItem itemLabel="College Student" id="type_stu" itemValue="s" />
+                    <f:selectItem itemLabel="Child" id="type_child" itemValue="c" />
+                </h:selectOneRadio>
+                
+            </h:panelGrid>
+            <span style="display: block" id="pass_message" class="required">Passwords do not match</span>
+                
+                <h:commandButton value="Register" action="#{userRegistration.register}" id="button" />
+                <input type="reset" value="Reset" />
+                <br/>
+                <h:message id="outuname" for="userfield" styleClass="required" /><br/>
+                <h:message id="outpass" for="passfield" styleClass="required" /><br/>
+                <h:outputText styleClass="required" 
+                    value="Please check your email after registering to activate your account"/>
+        </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

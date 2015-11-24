@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/student-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Account Update</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+            $(document).ready(function() {
+                $('.link').click(function() {
+                    $(this).next(".form").slideToggle('fast');
+                });
+                $('#pass_message').hide();
+            });
+        </script>
+        <style>
+/*            .table {
+                border: 1px solid #AFAFAF;
+            }
+            .table td {
+                text-align: center;
+                vertical-align: top;
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+            ul {
+                padding-left: 25px;
+            }*/
+            .link {
+                font-size: 115%;
+            }
+            .form {
+                display: none;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="update" >                             
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>                   
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" label="Dashboard" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" action="orientation?faces-redirect=true" label="Orientation" mode="server" rendered="#{not student.ortn_complete}"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" id="updstudent" label="Update Account" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availStu" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" action="request-partner?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" action="attendance?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <center><h3>Update My Account</h3></center>
+        <center>
+            <a class="link" href="#"><b>Update My Password</b></a>
+            <div class="form">
+                <h:form id="pass_form">
+                    <center>
+                        <h:panelGrid columns="2" styleClass="pass_form" columnClasses="left_column,right_column">
+                            <h:outputLabel value="Current password: " />
+                            <h:inputSecret required="true" id="curpassfield" value="#{userUpdate.currentPass}"
+                                           requiredMessage="Please enter current password" 
+                                           validator="#{userValidator.validatePass}"/>
+
+                            <h:outputLabel value="New password: " />
+                            <h:inputSecret required="true" id="passfield" value="#{userUpdate.newPass}"
+                                           requiredMessage="Please provide a new password"
+                                           validatorMessage="Password length must be at least 6 characters">
+                                <f:validateLength minimum="6"/>
+                            </h:inputSecret>
+
+
+                            <h:outputLabel value="Confirm new password: " />
+                            <h:inputSecret required="true" id="confpassfield" onkeyup="comp(this.value);" />
+                        </h:panelGrid>
+                        <span style="display: block" id="pass_message" class="required">Passwords do not match</span>
+                        <a4j:commandButton value="Update" action="#{userUpdate.updatePassword()}" id="button" 
+                                           oncomplete="alert('Update complete.')"/>
+                        <input type="reset" value="Reset" />
+                        <br/>
+                        <h:message id="outpass" for="passfield" style="color:red" />
+                        <h:message id="outconf" for="confpassfield" style="color:red" />
+                    </center>
+                </h:form>
+                <script>
+                    document.getElementById('pass_form:button').disabled = true;
+                    function comp(confpass) {
+                        var pass = document.getElementById('pass_form:passfield').value;
+                        var button = document.getElementById('pass_form:button');
+                        if (confpass === pass) {
+                            $('#pass_message').hide();
+                            button.disabled = false;
+                        }
+                        else {
+                            button.disabled = true;
+                            $('#pass_message').show();
+                        }
+                    }
+                </script>
+            </div><br></br><br></br>
+
+            <a class="link" href="#"><b>Update My Email</b></a>
+            <div class="form">
+                <h:form id="email_form">
+                    <center>
+                        <h:panelGrid columns="2" styleClass="email_form" columnClasses="left_column, right_column">
+                            <h:outputText value="Current Email:"/>
+                            <h:outputText value="#{user.email}"/>
+                            
+                            <h:outputLabel value="New Email: " />
+                            <h:inputText required="true" value="#{userUpdate.email}"
+                                         requiredMessage="Please provide a new email" />
+                        </h:panelGrid>
+
+                        <h:commandButton value="Update" action="#{userUpdate.updateEmail()}"/>
+                        <input type="reset" value="Reset" />
+                    </center>
+                </h:form>
+            </div>
+            <br></br><br></br>
+
+            <a class="link" href="#"><b>Update My Details</b></a>
+            <div class="form">
+                <h:form id="reg_form">
+                    <center>
+                        <h:panelGrid columns="2" columnClasses="left_column,right_column">
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="First Name: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter your first name"
+                                         id="first" value="#{student.firstname}" >
+                                <f:validateLength minimum="2" maximum="25" />
+                            </h:inputText>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Last Name: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter your last name"
+                                         id="last" value="#{student.lastname}" >
+                                <f:validateLength minimum="2" maximum="25" />
+                            </h:inputText>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="College: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter your current college"
+                                         id="college" value="#{student.college}" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Gender: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu id="gender" value="#{student.gender}" required="true"
+                                              requiredMessage="Please select your gender">
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Male" id="gen_male" itemValue="m" />
+                                <f:selectItem itemLabel="Female" id="gen_female" itemValue="f" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Home Phone: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter a home phone number"
+                                         id="homephone" value="#{student.homephone}" 
+                                         validator="#{phoneValidator.validatePhone}" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Cell Phone: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter a cell phone numer"
+                                         id="cellphone" value="#{student.cellphone}"
+                                         validator="#{phoneValidator.validatePhone}" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Are You Special Education: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{student.spec_ed}" required="true"
+                                             requiredMessage="Please select Yes or No" id="spec_ed">
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Yes" itemValue="true" />
+                                <f:selectItem itemLabel="No" itemValue="false" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Are You Bi-Lingual Education: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{student.lang_ed}" required="true"
+                                             requiredMessage="Please select Yes or No" id="lang_ed">
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Yes" itemValue="true" />
+                                <f:selectItem itemLabel="No" itemValue="false" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Would You Like to Have Two Partners: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{student.two_chldn}" required="true"
+                                             requiredMessage="Please select Yes or No" id="two-part">
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Yes" itemValue="true" />
+                                <f:selectItem itemLabel="No" itemValue="false" />
+                            </h:selectOneMenu>
+
+                            <h:outputLabel value="Personal Notes About You: " />
+                            <h:inputTextarea value="#{student.notes}" id="notes" />
+                        </h:panelGrid>
+                        <div id="buttons">
+                            <span class='required'>* indicates required fields</span><br/>
+                            <h:commandButton value="Submit" action="#{studentUpdate.updateAccount()}" id="button" />
+                            <input type="reset" value="Reset" />
+                            <h:messages id="messages" />
+                        </div>
+                    </center>
+                </h:form>
+            </div>
+        </center>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="./../resources/templates/front_desk-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Front Desk Dashboard</title>
+    </ui:define>       
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h3>Front Desk Dashboard</h3>
+                <br/>
+
+                <br/>
+                <h4>Today's Reading Sessions</h4>
+                <h:panelGroup id='sessionPanel' >
+                    <h:panelGroup id="noSessions" rendered="#{empty frontDeskDashboard.sessions}" >
+                        <h5>No Reading Sessions Scheduled</h5>
+                    </h:panelGroup>
+                    
+                    <h:dataTable id='sessionsSchedule' rendered="#{not empty frontDeskDashboard.sessions}" 
+                                 border="1" value="#{frontDeskDashboard.sessions}" var='sess' >
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Student" />
+                            </f:facet>
+                            <h:commandLink style="font-size: 110%" value="#{sess.student.firstname} #{sess.student.lastname}" 
+                               action="#{studentViewer.view(sess.student.email)}" target="_blank"/>
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Child" />
+                            </f:facet>
+                            <h:commandLink style="font-size: 110%" value="#{sess.child.firstname} #{sess.child.lastname}" 
+                                           action="#{childViewer.view(sess.child.childID)}" target="_blank"/>
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name='header'>
+                                <h:outputText value="Session Time" />
+                            </f:facet>
+                            <h:outputText value="#{sess.hour}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Check In Session" />
+                            </f:facet>
+                            <a4j:commandLink value ='Check In' action="#{frontDeskDashboard.checkIn(sess)}"
+                                               render='@form' />
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br/>
+                <br/>
+                <h:panelGroup id="checkedinPanel" >
+                    <h4>List of Checked-in Students</h4>
+                    <h:panelGroup id="nonechecked" rendered="#{empty frontDeskDashboard.checkedIn}">
+                        <h5>No Sessions Checked-in</h5>
+                    </h:panelGroup>
+                    <h:dataTable id="checkedinSessions" rendered="#{not empty frontDeskDashboard.checkedIn}"
+                                 border="1" value="#{frontDeskDashboard.checkedIn}" var='checkin' >
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Student" />
+                            </f:facet>
+                            <h:commandLink style="font-size: 110%" value="#{checkin.student.firstname} #{checkin.student.lastname}" 
+                                           action="#{studentViewer.view(checkin.student.email)}" target="_blank"/>
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Check-in Time" />
+                            </f:facet>
+                            <h:outputText value="#{checkin.timestamp.toDate()}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions"/>
+                            </f:facet>
+                            <a4j:commandLink value="Delete" render="@form"
+                                            action="#{frontDeskDashboard.deleteAttendance(
+                                                      checkin.student.studentID, 
+                                                      checkin.timestamp.getMillis())}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </center>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

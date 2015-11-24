@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/student-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Student: View Attendance</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="attendance">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="dash" label="Dashboard" action="dashboard?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" action="orientation?faces-redirect=true" label="Orientation" mode="server" rendered="#{not student.ortn_complete}"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" action="request-partner?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h3>Student Attendance Report</h3>
+                
+                <h:panelGrid columns="2" >
+                    <h:outputLabel value="Select Month:" for="month" />
+                    <h:selectOneMenu id="month" value="#{studentReports.month}" >
+                        <f:selectItem itemLabel="Select Month" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="January" itemValue="1" />
+                        <f:selectItem itemLabel="February" itemValue="2" />
+                        <f:selectItem itemLabel="March" itemValue="3" />
+                        <f:selectItem itemLabel="April" itemValue="4" />
+                        <f:selectItem itemLabel="May" itemValue="5" />
+                        <f:selectItem itemLabel="June" itemValue="6" />
+                        <f:selectItem itemLabel="July" itemValue="7" />
+                        <f:selectItem itemLabel="August" itemValue="8" />
+                        <f:selectItem itemLabel="September" itemValue="9" />
+                        <f:selectItem itemLabel="October" itemValue="10" />
+                        <f:selectItem itemLabel="November" itemValue="11" />
+                        <f:selectItem itemLabel="December" itemValue="12" />
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <a4j:commandButton value="Submit" action="#{studentReports.findByMonth()}"
+                                    render="@form" />
+                <a4j:commandButton value="Reset" action="#{studentReports.reset()}" render="@form" />
+                
+                <h:panelGroup id="results" rendered="#{studentReports.month ne -1}" >
+                    <h4>Attendance Results</h4>
+                    <h:dataTable id="reportTable" border="1" style="border-collapse: collapse"
+                                 value="#{studentReports.attendances}" var="att">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Date and Time" />
+                            </f:facet>
+                            <h:outputText value="#{att.timestamp.toDate()}" />
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

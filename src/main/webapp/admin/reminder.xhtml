@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Admin Email Reminders</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="reminder" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" action="pairing?faces-redirect=true" label="Pair Partners" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" label="Reminders" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h:panelGrid columns="2" columnClasses="left_column, right_column" cellpadding="2" cellspacing="2">
+                    <h:outputLabel value="Recipients: " for="recipients"/>
+                    <h:selectOneMenu value="#{adminReminder.recipients}" id="recipients">
+                        <f:selectItem itemLabel="Select Recipients" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="All Students" itemValue="students" />
+                        <f:selectItem itemLabel="All Children" itemValue="children"/>
+                        <f:selectItem itemLabel="All Partner Pairs" itemValue="pairs"/>
+                        <f:selectItem itemLabel="All Active Users" itemValue="all"/>
+                        <f:ajax event="change" execute="@this" render="@form" />
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Template: " for="template"/>
+                    <h:selectOneMenu value="#{adminReminder.reminder}" id="template">
+                        <f:selectItem itemLabel="Select Reminder" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Upcoming Break" itemValue="break" />
+                        <f:selectItem itemLabel="Upcoming Holiday" itemValue="holiday"/>
+                        <f:selectItem itemLabel="Day Off" itemValue="off"/>
+                        <f:selectItem itemLabel="End of Semester" itemValue="semester"/>
+                        <f:selectItem itemLabel="Dress Code" itemValue="dress"/>
+                        <f:selectItem itemLabel="Blank Form" itemValue="blank"/>
+                        <a4j:ajax event="change" listener="#{adminReminder.changeReminder}" render="@form" execute="@this" />
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Subject: " for="subject" />
+                    <h:inputText value="#{adminReminder.subject}" id="subject"/>
+                    
+                </h:panelGrid>
+                <h:panelGrid>
+                    <rich:editor value="#{adminReminder.body}" height="250" width="700" />
+                </h:panelGrid>
+                
+                <a4j:commandButton value="Send Email" action="#{adminReminder.sendEmail}" render="@form"
+                                   disabled="#{empty adminReminder.recipients or empty adminReminder.reminder or adminReminder.sending}" oncomplete="alert('Email Sent!')" />
+            </center>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/templates/home-template.xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+
+     <ui:define name="htmlHead">
+        <title>Partners in Reading - Login</title>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="login">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="login" label="Sign In" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="register" action="register?faces-redirect=true" label="Register"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="loginform">
+            <center>
+            <center><h:panelGrid columns="2" columnClasses="left_column, right_column" >
+                <h:outputLabel value="Email: " />
+                <h:inputText id="username" value="#{userLogin.email}"/>
+
+                <h:outputLabel value="Password: " />
+                <h:inputSecret id="password" value="#{userLogin.password}"/>
+                </h:panelGrid></center>
+            <div id="buttons">
+                    <h:commandButton id="loginButton" value="Login" action="#{userLogin.login}"/><br/>
+                    <h:commandLink id="registerButton" value="Click Here to Register" action="register?faces-redirect=true" /><br/>
+                    <h:outputText value="Forgot Password? " />
+                    <h:commandLink value="Click Here" action="reset-password?faces-redirect=true" />
+                
+            </div>
+            </center>
+
+        </h:form>
+        <script>
+            document.getElementById('loginform:username').focus();
+        </script>
+    </ui:define>
+
+</ui:composition>

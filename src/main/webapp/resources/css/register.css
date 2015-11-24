@@ -1,0 +1,11 @@
+.inputs table td {
+    text-align: left;
+}
+
+.tags {
+    text-align: right;
+}
+
+list {
+    list-style: none;
+}

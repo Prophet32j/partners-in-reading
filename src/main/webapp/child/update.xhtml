@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/home-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Account Update</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+           function comp(confpass) {
+                var pass = document.getElementById('pass_form:passfield').value;
+                var button = document.getElementById('pass_form:passbutton');
+                if (confpass === pass) {
+                    button.disabled = false;
+                    $('#pass_message').hide();
+                }
+                else {
+                    button.disabled = true;
+                    $('#pass_message').show();
+                }
+            }
+            $(document).ready(function() {
+                document.getElementById('pass_form:passbutton').disabled = true;
+                $('#pass_message').hide();
+            }); 
+        </script>
+        <style>
+            .table {
+                border: 1px solid #AFAFAF;
+            }
+            .table td {
+                vertical-align: top;
+                padding-right: 5px;
+                padding-left: 5px;
+            }
+            ul {
+                padding-left: 25px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="update" >                             
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>                   
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" label="Dashboard" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="family" label="Manage Family" action="manage-family?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" id="updChild" label="Update Account" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availStu" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Account Update</h3>
+            <h4>Change Password</h4>
+            <h:form id="pass_form">
+                <h:panelGrid columns="2" columnClasses="left,right">
+                    <h:outputLabel value="Current password: " />
+                    <h:inputSecret required="true" id="passcurpassfield" value="#{userUpdate.currentPass}"
+                                   requiredMessage="Please enter current password"
+                                   validator="#{userValidator.validatePass}"/>
+
+                    <h:outputLabel value="New password: " />
+                    <h:inputSecret required="true" id="passfield" value="#{userUpdate.newPass}"
+                                   requiredMessage="Please provide a new password"
+                                   validatorMessage="Password length must be at least 6 characters">
+                        <f:validateLength minimum="6"/>
+                    </h:inputSecret>
+
+                    <h:outputLabel value="Confirm password: " />
+                    <h:inputSecret required="true" id="confpassfield" onkeyup="comp(this.value);" />
+                </h:panelGrid>
+                <span style="display: block" id="pass_message" class="required">Passwords do not match</span>
+                <a4j:commandButton value="Update" action="#{userUpdate.updatePassword}" id="passbutton" 
+                            execute="passfield" render="@form" oncomplete="alert('Update complete.');" />
+                <input type="reset" value="Reset" />
+                <br/>
+                <h:message id="outpass" for="passfield" style="color:red" />
+                <br/>
+                
+                <h4>Change Email</h4>
+                <h:panelGrid columns="2" columnClasses="left,right">
+
+                    <h:outputLabel value="Current Email: "/>
+                    <h:outputText value="#{user.email}"/>
+
+                    <h:outputLabel value="New Email: " />
+                    <h:inputText required="true" id="email" value="#{userUpdate.email}"
+                                 requiredMessage="Please provide a new email" 
+                                 validator="#{userValidator.validateEmail}" />
+                </h:panelGrid>
+                <h:message for="email" styleClass="required"/>
+                <h:commandButton value="Update" action="#{userUpdate.updateEmail()}" />
+                <input type="reset" value="Reset" />
+            </h:form>
+        </center>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/home-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Student Registration</title>
+    </ui:define>
+    <ui:define name="leftNav">
+        
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="reg_form">
+            <center>
+                <h:panelGrid columns="2" columnClasses="left_column, right_column">
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="First Name: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter your first name"
+                                 id="first" value="#{studentRegistration.newStudent.firstname}" >
+                        <f:validateLength minimum="2" maximum="25" />
+                    </h:inputText>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Last Name: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter your last name"
+                                 id="last" value="#{studentRegistration.newStudent.lastname}" >
+                        <f:validateLength minimum="2" maximum="25" />
+                    </h:inputText>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="College: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter your current college"
+                                 id="college" value="#{studentRegistration.newStudent.college}" />
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Gender: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu id="gender" value="#{studentRegistration.newStudent.gender}" required="true"
+                                      requiredMessage="Please select your gender">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Male" id="gen_male" itemValue="m" />
+                        <f:selectItem itemLabel="Female" id="gen_female" itemValue="f" />
+                    </h:selectOneMenu>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Home Phone: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter a home phone number"
+                                 id="homephone" value="#{studentRegistration.newStudent.homephone}" 
+                                 validator="#{phoneValidator.validatePhone}" />
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Cell Phone: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter a cell phone numer"
+                                 id="cellphone" value="#{studentRegistration.newStudent.cellphone}"
+                                 validator="#{phoneValidator.validatePhone}" />
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Are You Special Education: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{studentRegistration.newStudent.spec_ed}" required="true"
+                                     requiredMessage="Please select Yes or No" id="spec_ed">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Are You Bi-Lingual Education: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{studentRegistration.newStudent.lang_ed}" required="true"
+                                     requiredMessage="Please select Yes or No" id="lang_ed">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Would You Like to Have Two Partners: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{studentRegistration.newStudent.two_chldn}" required="true"
+                                     requiredMessage="Please select Yes or No" id="two-part">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Are You Requesting a Specific Partner: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{studentRegistration.hasReqPartner}" required="true"
+                                     requiredMessage="Please indicate if you have a requested partner">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true"/>
+                        <f:selectItem itemLabel="No" itemValue="false"/>
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Personal Notes About You: " />
+                    <h:inputTextarea value="#{studentRegistration.newStudent.notes}" id="notes" />
+                </h:panelGrid>
+                <div id="buttons">
+                    <span class='required'>* indicates required fields</span><br/>
+                    <h:commandButton value="Next" action="#{studentRegistration.register()}" id="button" />
+                    <input type="reset" value="Reset" />
+                    <h:messages id="messages" />
+                    
+                </div>
+            </center>
+            
+        </h:form>
+        <script>
+            document.getElementById('reg_form:first').focus();
+        </script>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="./resources/templates/home-template.xhtml">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Account Activation</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="login" action="login?faces-redirect=true" label="Sign In" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="register" action="register?faces-redirect=true" label="Register" />
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h:panelGroup layout="block" rendered="#{activationController.activated}">
+               <p>Your account is successfully activated! Please sign in to continue registration</p>
+               <p><h:link outcome="login?faces-redirect=true">sign in</h:link></p>
+            </h:panelGroup>
+            <h:panelGroup layout="block" rendered="#{!activationController.activated}">
+               <p>Activation failed! Please enter your email address to try once again.</p> 
+               <h:form>
+                   <h:outputLabel value="Email: " for="email" />
+                   <h:inputText value="#{activationController.email}" id="email"/> <br/>
+                   <h:commandButton value="Submit" action="#{activationController.sendActivationKey()}"/>
+               </h:form>
+            </h:panelGroup>
+        </center>
+    </ui:define>
+</ui:composition>

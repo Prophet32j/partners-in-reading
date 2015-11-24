@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/child-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <title>Partners In Reading - Edit Family</title>
+        <script>
+            $(document).ready(function() {
+//                $('#addlink').click(function() { $('#add').slideToggle('fast'); });
+            });
+        </script>
+        <style>
+            .actions li {
+                display: inline;
+            }
+            .actions {
+                padding: 0px;
+                margin: 0px;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form id="form1">
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem ="family">                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" mode="server" label="Dashboard" />
+                    <rich:panelMenuItem leftIcon="disc" name="family" label="Manage Family" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" id="updChild" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availChild" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h:form>
+                <h:panelGroup layout="block">
+                    <h4>My Family</h4>
+                    <h:dataTable value="#{family.famlist}" var="c" border="1">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:outputText value="#{c.firstname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Grade"/>
+                            </f:facet>
+                            <h:outputText value="#{c.grade}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Age"/>
+                            </f:facet>
+                            <h:outputText value="#{c.age}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions"/>
+                            </f:facet>
+                            <ul class="actions">
+                                <li><a4j:commandLink value="Edit" action="#{familyController.editChild(c.childID)}" execute="@this" render="@form" /> |</li>
+                                <li><a4j:commandLink value="Delete" action="#{familyController.remove(c)}" execute="@this" render="@form" 
+                                                     onclick="return confirm('Are you sure you want to delete this child?\nClick OK to confirm.');"/> |</li>
+                                <li><a4j:commandLink value="Request Partner" action="#{familyController.requestPartner(c.childID)}" execute="@this" render="@form" /> |</li>
+                                <li><a4j:commandLink value="Delete Request" action="#{familyController.deleteRequest(c.childID)}" execute="@this" render="@form" /></li>
+                            </ul>
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+                    <a4j:commandLink value="Add New Child" action="#{familyController.create()}" execute="@this" render="@form" />
+                </h:panelGroup>
+                <br/><br/>
+                <h:panelGroup layout="block" rendered="#{familyController.add or familyController.update}" >
+                    <h:panelGroup rendered="#{not familyController.settings.registrationOpen}">
+                        <h5 style="color: darkred">Registration Closed</h5>
+                    </h:panelGroup>
+                    <a4j:region id="c-region">
+                    <h:panelGroup layout="block" rendered="#{familyController.settings.registrationOpen}" >
+                        <h:panelGrid columns="2" columnClasses="left_column,right_column">
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="First Name: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter your first name"
+                                         id="first" value="#{familyController.newChild.firstname}" >
+                                <f:validateLength minimum="2" maximum="25" />
+                            </h:inputText>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Last Name: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter your last name"
+                                         id="last" value="#{familyController.newChild.lastname}" >
+                                <f:validateLength minimum="2" maximum="25" />
+                            </h:inputText>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Gender: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu id="gender" value="#{familyController.newChild.gender}" required="true"
+                                              requiredMessage="Please select your gender">
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Male" id="gen_male" itemValue="m" />
+                                <f:selectItem itemLabel="Female" id="gen_female" itemValue="f" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Home Phone: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter a home phone number"
+                                         id="homephone" value="#{familyController.newChild.homephone}" 
+                                         validator="#{phoneValidator.validatePhone}" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Cell Phone: " />
+                            </h:panelGroup>
+                            <h:inputText required="true" requiredMessage="Please enter a cell phone numer"
+                                         id="cellphone" value="#{familyController.newChild.cellphone}"
+                                         validator="#{phoneValidator.validatePhone}" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Age: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu id="age" value="#{familyController.newChild.age}" required="true"
+                                             requiredMessage="Please select your child's age">
+                                <f:selectItems value="#{constants.ages}" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Grade: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{familyController.newChild.grade}" required="true"
+                                         requiredMessage="Please enter the child's grade." id="grade">
+                                <f:selectItems value="#{constants.grades}" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Primary Parent/Guardian: " />
+                            </h:panelGroup>
+                            <h:inputText value="#{familyController.newChild.parent_one}" required="true"
+                                         requiredMessage="Please enter the primary parent's name" id="parent1" />
+
+                            <h:outputLabel value="Secondary Parent/Guardian: " />
+                            <h:inputText value="#{familyController.newChild.parent_two}" id="parent2" />
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Special Needs: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{familyController.newChild.special_needs}" id="spec_needs" >
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Yes" itemValue="true" />
+                                <f:selectItem itemLabel="No" itemValue="false" />
+                            </h:selectOneMenu>
+
+                            <h:panelGroup>
+                                <h:outputText value="*" styleClass="required"/>
+                                <h:outputLabel value="Language Needs: " />
+                            </h:panelGroup>
+                            <h:selectOneMenu value="#{familyController.newChild.language_needs}" id="lang_needs" >
+                                <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                                <f:selectItem itemLabel="Yes" itemValue="true" />
+                                <f:selectItem itemLabel="No" itemValue="false" />
+                            </h:selectOneMenu>
+
+                            <h:outputLabel value="Personal Notes About Your Child: " />
+                            <h:inputTextarea value="#{familyController.newChild.notes}" id="notes" />
+                        </h:panelGrid>
+                        <div id="buttons">
+                            <a4j:commandButton value="Update" action="#{familyController.updateChild()}" 
+                                               render="@form" rendered="#{familyController.update}" execute="@region" />
+                            <h:commandButton value="Add" action="#{familyController.addChild()}" id="button" 
+                                             rendered="#{familyController.add}" />
+                            <a4j:commandButton value="Cancel" action="#{familyController.cancel()}" execute="@this" render="@form"/>
+                        </div>
+                    </h:panelGroup>
+                    </a4j:region>
+                </h:panelGroup>
+                
+                <a4j:region id="p-request">
+                <h:panelGroup layout="block" rendered="#{familyController.requesting}">
+                    <h:panelGrid columns="2" columnClasses="tableLeft,tableRight">
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel for="p-first" value="Student's First Name:"/>
+                        </h:panelGroup>
+                        <h:inputText id="p-first" value="#{familyController.partner.firstName}" required="true"
+                                     requiredMessage="Please provide a first name"/>
+
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel for="p-last" value="Student's Last Name:"/>
+                        </h:panelGroup>
+                        <h:inputText id="p-last" value="#{familyController.partner.lastName}" required="true"
+                                     requiredMessage="Please provide a last name"/>
+
+                        <h:panelGroup>
+                            <h:outputText value="*" styleClass="required"/>
+                            <h:outputLabel for="p-phone" value="Student's Phone:"/>
+                        </h:panelGroup>
+                        <h:inputText id="p-phone" value="#{familyController.partner.phone}" required="true"
+                                     requiredMessage="Please provide a phone number"/>
+                    </h:panelGrid>
+                    <h:messages/><br/>
+                    <span class='required'>* indicates required fields</span><br/>
+                    <a4j:commandButton value="Request" action="#{familyController.updatePartner()}" execute="@region" render="@form"/>
+                    <a4j:commandButton value="Cancel" action="#{familyController.cancel()}" execute="@this" render="@form"/>
+                </h:panelGroup>
+                </a4j:region>
+            </h:form>
+        </center>
+    </ui:define>
+</ui:composition>

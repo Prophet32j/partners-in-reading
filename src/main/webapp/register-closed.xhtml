@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./resources/templates/home-template.xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+
+     <ui:define name="htmlHead">
+        <title>Partners in Reading - Registration Closed</title>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="register" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="index?faces-redirect=true" label="Home" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="login" action="login?faces-redirect=true" label="Sign In" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="register" label="Register" selectable="false"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center><h2>Registration Closed!</h2></center>
+        <p>We're Sorry.  Registration is currently closed.</p>
+        <p>Please contact the Normal Public Library for further assistance.</p>
+        <p>
+            Lyndsey Carney<br/>
+            Partners in Reading Coordinator<br/>
+            (309)454-4668<br/>
+            lcarney@normalpl.org<br/>
+        </p>
+    </ui:define>
+</ui:composition>

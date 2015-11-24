@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/front_desk-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Session Check-In</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js" />
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+            });
+        </script>
+        <style>
+            .view td {
+                vertical-align: top;
+                padding-left: 5px;
+                
+            }
+            .inline td,th{
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            #dirlink {
+                font-size: 115%;
+            }
+            #directions {
+                display: none;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="checkin" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" label="Dashboard" action="dashboard?faces-redirect=true" />
+                    <rich:panelMenuItem leftIcon="disc" name="checkin" label="Check In Session" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="report" label="Reports" action="report?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Query Users" mode="server"/>                  
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Session Search &amp; Check-in</h3>
+        </center>
+        <p>
+            <a id="dirlink" href="#"><b>Click For Directions</b></a>
+            <div id="directions">
+                1. Enter a name to search on<br/>
+                2. Reading Sessions will be filtered based on search term<br/>
+                3. Click on the <b>Details</b> link to view full user information
+            </div>
+        </p>
+        <center>
+            <h:form id="searchform">
+                <h:panelGrid id="searchtable" columns="2">
+                    <h:outputLabel id="searchlabel" value="Enter Name:" for="searchinput" />
+                    <h:inputText id="searchinput" value="#{checkinController.searchString}" />
+                </h:panelGrid>
+                <h:commandButton value="Search">
+                    <a4j:actionListener listener="#{checkinController.find()}" />
+                    <f:ajax render="sessionpanel" execute="searchinput" />
+                </h:commandButton>
+                <h:commandButton value="Reset">
+                    <a4j:actionListener listener="#{checkinController.reset()}" />
+                    <f:ajax render="sessionpanel searchinput" execute="searchinput" />
+                </h:commandButton>
+                <br/>
+                <br/>
+                <a4j:outputPanel id="sessionpanel" ajaxRendered="true">
+                    <h:panelGrid columns="1"  >
+                        <h:outputText id="sessionLabel" value="Paired Reading Sessions" styleClass="inline" />
+                    </h:panelGrid>
+                    <h:dataTable id="sessiontable" value="#{checkinController.sessions}" var="sess"
+                                 border="1" rendered="#{not empty checkinController.sessions}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Student" />
+                            </f:facet>
+                            <h:commandLink value="#{sess.student.firstname} #{sess.student.lastname}" 
+                                           action="#{studentViewer.view(sess.student.email)}" target="_blank" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Child" />
+                            </f:facet>
+                            <h:commandLink value="#{sess.child.firstname} #{sess.child.lastname}" 
+                                           action="#{childViewer.view(sess.child.childID)}" target="_blank" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Session Time" />
+                            </f:facet>
+                            <h:outputText value="#{sess.hour}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Session Day" />
+                            </f:facet>
+                            <h:outputText value="#{sess.day}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Check In" />
+                            </f:facet>
+                            <h:commandLink value="Check In" action="#{checkinController.checkin(sess.student.studentID)}" 
+                                    onclick="return confirm('You are about to check in a session.\nClick Ok to confirm.')" />
+                        </h:column>
+                    </h:dataTable>
+                    <br/>
+                    <h:panelGrid columns="1"  >
+                        <h:outputText value="Requested Reading Sessions" styleClass="inline" />
+                    </h:panelGrid>
+                    <h:dataTable value="#{checkinController.requests}" var="req" 
+                                 border='1' rendered="#{not empty checkinController.requests}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Student" />
+                            </f:facet>
+                            <h:commandLink value="#{req.student.firstname} #{req.student.lastname}" 
+                                           action="#{studentViewer.view(req.student.email)}" target="_blank" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Child Name"/>
+                            </f:facet>
+                            <h:outputText value="#{req.firstName} #{req.lastName}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Child Phone"/>
+                            </f:facet>
+                            <h:outputText value="#{req.phone}" />
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Check In" />
+                            </f:facet>
+                            <h:commandLink value="Check In" action="#{checkinController.checkin(req.student.studentID)}" 
+                                    onclick="return confirm('You are about to check in a session.\nClick Ok to confirm.')" />
+                        </h:column>
+                    </h:dataTable>
+                </a4j:outputPanel>
+            </h:form>
+        </center>
+    </ui:define>
+
+</ui:composition>

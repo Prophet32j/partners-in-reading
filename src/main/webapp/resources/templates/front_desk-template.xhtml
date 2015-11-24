@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+
+    <h:head>
+        <h:outputStylesheet library="css" name="layout.css" />
+        <h:outputStylesheet library="css" name="menu.css" />
+        <ui:insert name="htmlHead" />
+    </h:head>
+
+    <h:body>
+        <div id="header">
+            <ui:include src="/WEB-INF/includes/header.xhtml" />
+        </div>
+        <div id="container">
+            <div id="leftNav">
+                <ui:insert name="leftNav">
+                    <h:form>
+                    <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                        <rich:panelMenu styleClass="menu" activeItem="dashboard" >                        
+                            <rich:panelMenuItem leftIcon="disc" name="dashboard" label="Dashboard" />
+                            <rich:panelMenuItem leftIcon="disc" name="check_in" action="checkin?faces-redirect=true" label="Check In Session" mode="server" />
+                            <rich:panelMenuItem leftIcon="disc" name="report" label="Reports" action="report?faces-redirect=true"/>
+                            <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Query Users" mode="server"/>                  
+                            <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                        </rich:panelMenu>
+                    </h:panelGrid>
+                </h:form>
+                </ui:insert>
+            </div>
+            <div>
+                <div id="content">
+                    <ui:insert name="content">Content</ui:insert>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <ui:include src="/WEB-INF/includes/footer.xhtml"/>
+        </div>
+    </h:body>
+
+</html>

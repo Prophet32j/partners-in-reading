@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      template="./../resources/templates/student-template.xhtml">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Orientation Quiz</title>
+        <h:outputStylesheet library="css" name="quiz.css" />
+  </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" >                             
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>                   
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" label="Dashboard" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" action="orientation?faces-redirect=true" label="Orientation" mode="server" rendered="#{not student.ortn_complete}"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" id="updstudent" label="Update Account" action="update?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availStu" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" action="request-partner?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" action="attendance?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        
+        <p>
+            Once you have answered all questions and submitted your quiz, you will receive an email with your results.
+        </p>
+
+        <h:form id="quizForm" onsubmit="return gradeQuizJS();">
+            1. <h:outputLabel for="q1" value="Where should you check in and meet your partner upon arriving at the library?"/><br/>
+            <h:selectOneMenu id="q1" value="#{quizController.q1_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1" itemLabel="At the Children’s Information Desk" itemValue="At the Children’s Information Desk"/>
+                <f:selectItem id="a2" itemLabel="Right outside the front door" itemValue="Right outside the front door"/>
+                <f:selectItem id="a3" itemLabel="At the reserved tables throughout the library" itemValue="At the reserved tables throughout the library"/>
+                <f:selectItem id="a4" itemLabel="Check in online and meet your partner at an agreed upon location" itemValue="Check in online and meet your partner at an agreed upon location"/>
+            </h:selectOneMenu>
+            <h:message for="q1"/>
+            <br/><br/>                   
+            2. <h:outputLabel for="q2" value="Please complete this sentence: The last 15 minutes of your session is for "/><br/>
+            <h:selectOneMenu id="q2" value="#{quizController.q2_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_2" itemLabel="a question and answer session." itemValue="a question and answer session."/>
+                <f:selectItem id="a2_2" itemLabel="telling your partner's parent/guardian how the session went." itemValue="telling your partner's parent/guardian how the session went."/>
+                <f:selectItem id="a3_2" itemLabel="assigning reading that is to be done for the next session." itemValue="assigning reading that is to be done for the next session."/>
+                <f:selectItem id="a4_2" itemLabel="free time." itemValue="free time."/>
+            </h:selectOneMenu>
+            <h:message for="q2"/>
+            <br/><br/>
+            3. <h:outputLabel for="q3" value="Please complete this sentence.  It doesn't matter how you decide to read, as long as your partner "/><br/>
+            <h:selectOneMenu id="q3" value="#{quizController.q3_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_3" itemLabel="is following along with you." itemValue="is following along with you."/>
+                <f:selectItem id="a2_3" itemLabel="understands what is going on in the book." itemValue="understands what is going on in the book."/>
+                <f:selectItem id="a3_3" itemLabel="has a chance to read out loud." itemValue="has a chance to read out loud."/>
+                <f:selectItem id="a4_3" itemLabel="has read by themselves prior to the meeting." itemValue="has read by themselves prior to the meeting."/>
+            </h:selectOneMenu>
+            <h:message for="q3"/>
+            <br/><br/>
+            4. <h:outputLabel for="q4" value="We ask all parents to drop off and pick up their children where?"/><br/>
+            <h:selectOneMenu id="q4" value="#{quizController.q4_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_4" itemLabel="Outside in the front of the library." itemValue="Outside in the front of the library."/>
+                <f:selectItem id="a2_4" itemLabel="In the Children's Department on the second floor of the library." itemValue="In the Children’s Department on the second floor of the library."/>
+                <f:selectItem id="a3_4" itemLabel="In the lobby right when you walk in the door." itemValue="In the lobby right when you walk in the door."/>
+                <f:selectItem id="a4_4" itemLabel="The circulation desk." itemValue="The circulation desk."/>
+            </h:selectOneMenu>
+            <h:message for="q4"/>
+            <br/><br/>
+            5. <h:outputLabel for="q5" value="What does a child receive when they have finished the Reading Challenge?"/><br/>
+            <h:selectOneMenu id="q5" value="#{quizController.q5_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_5" itemLabel="A piece of candy of their choice." itemValue="A piece of candy of their choice."/>
+                <f:selectItem id="a2_5" itemLabel="One free movie ticket to Starplex Cinema in Normal." itemValue="One free movie ticket to Starplex Cinema in Normal."/>
+                <f:selectItem id="a3_5" itemLabel="A pat on the back." itemValue="A pat on the back."/>
+                <f:selectItem id="a4_5" itemLabel="A coupon from a local business." itemValue="A coupon from a local business."/>
+            </h:selectOneMenu>
+            <h:message for="q5"/>
+            <br/><br/>
+            6. <h:outputLabel for="q6" value="What is one item of clothing you may NOT wear to participate in Partners in Reading?"/><br/>
+            <h:selectOneMenu id="q6" value="#{quizController.q6_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_6" itemLabel="Shorts" itemValue="Shorts"/>
+                <f:selectItem id="a2_6" itemLabel="Baseball hat" itemValue="Baseball hat"/>
+                <f:selectItem id="a3_6" itemLabel="Jeans" itemValue="Jeans"/>
+                <f:selectItem id="a4_6" itemLabel="Short sleeve t-shirt" itemValue="Short sleeve t-shirt"/>
+            </h:selectOneMenu>
+            <h:message for="q6"/>
+            <br/><br/>
+            7. <h:outputLabel for="q7" value="What is one way you can contact the library if a problem arises?"/><br/>
+            <h:selectOneMenu id="q7" value="#{quizController.q7_a}" required="true" requiredMessage="Please Answer Question 1">
+                <f:selectItem id="a1_7" itemLabel="Call the library" itemValue="Call the library"/>
+                <f:selectItem id="a2_7" itemLabel="Email the library" itemValue="Email the library"/>
+                <f:selectItem id="a3_7" itemLabel="Walk in" itemValue="Walk in"/>
+                <f:selectItem id="a4_7" itemLabel="All the above" itemValue="All the above"/>
+            </h:selectOneMenu>
+            <h:message for="q7"/>
+            <br/>
+            <h:commandButton value="Submit" action="#{quizController.gradeQuiz()}"/>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

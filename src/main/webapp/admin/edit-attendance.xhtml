@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Edit Student Attendance</title>
+    </ui:define>
+
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="edit-attendance" itemMode="server" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" label="Dashboard" action="dashboard?faces-redirect=true" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" action="pairing?faces-redirect=true" label="Pair Partners" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" label="Reports" action="report?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <center>
+                <h3>Edit Student Attendance</h3>
+                
+                <h:panelGrid columns="2" columnClasses="tableLeft,tableRight">
+                    <h:outputLabel value="Select Student:" for="student"/>
+                    <h:selectOneMenu id="student" value="#{adminAttendance.studentid}" required="true">
+                        <f:selectItem itemLabel="Select Student" noSelectionOption="true"/>
+                        <f:selectItems value="#{adminAttendance.students}" var="_student"
+                                       itemValue="#{_student.studentID}"
+                                       itemLabel="#{_student.firstname} #{_student.lastname}"/>
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Select Month:" for="month"/>
+                    <h:selectOneMenu id="month" value="#{adminAttendance.month}" required="true">
+                        <f:selectItem itemLabel="Select Month" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="January" itemValue="1" />
+                        <f:selectItem itemLabel="February" itemValue="2" />
+                        <f:selectItem itemLabel="March" itemValue="3" />
+                        <f:selectItem itemLabel="April" itemValue="4" />
+                        <f:selectItem itemLabel="May" itemValue="5" />
+                        <f:selectItem itemLabel="June" itemValue="6" />
+                        <f:selectItem itemLabel="July" itemValue="7" />
+                        <f:selectItem itemLabel="August" itemValue="8" />
+                        <f:selectItem itemLabel="September" itemValue="9" />
+                        <f:selectItem itemLabel="October" itemValue="10" />
+                        <f:selectItem itemLabel="November" itemValue="11" />
+                        <f:selectItem itemLabel="December" itemValue="12" />
+                    </h:selectOneMenu>
+                </h:panelGrid>
+                <a4j:commandButton value="Submit" action="#{adminAttendance.search()}"
+                                    render="@form" />
+                <a4j:commandButton value="Reset" action="#{adminAttendance.reset()}" render="@form" />
+                
+                <h:panelGroup id="results" rendered="#{adminAttendance.month ne -1}" >
+                    <h4>Attendances</h4>
+                    <h:dataTable id="reportTable" value="#{adminAttendance.attendances}" var="att"
+                                 border="1">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Attendance Timestamp" />
+                            </f:facet>
+                            <h:outputText value="#{att.timestamp.toDate()}" />
+                        </h:column>
+                        
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Actions" />
+                            </f:facet>
+                            <a4j:commandLink value="Delete" render="@form"
+                                             action="#{adminAttendance.deleteAttendance(
+                                                       att.timestamp.getMillis())}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </center>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

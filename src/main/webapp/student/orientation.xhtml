@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/student-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Student Orientation</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" itemMode="server" activeItem="orientation" >                             
+                    <rich:panelMenuItem leftIcon="disc" name="index" action="/index?faces-redirect=true" label="Home" mode="server"/>                   
+                    <rich:panelMenuItem leftIcon="disc" name="dash" action="dashboard?faces-redirect=true" label="Dashboard" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="orientation" label="Orientation" mode="server" rendered="#{student.ortn_complete eq 'N'}" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="update" action="update?face-redirect=true" id="updstudent" label="Update Account" />
+                    <rich:panelMenuItem leftIcon="disc" name="avail" id="availStu" label="Update Availability" action="edit-times?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="partner" label="Request Partner" action="request-partner?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="attendance" label="View Attendance" action="attendance?faces-redirect=true"/>
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <p>Please take a few minutes and watch the Partners in Reading Orientation Video by clicking the button below. Upon finishing the video,
+            you are required to take a short quiz to prove that you understand the points mentioned in the video, so listen carefully!! Thank
+            your for participating in the Partners in Reading program.</p>
+        <br/>
+        <center>
+            <div id="video">
+                <iframe width="640" height="360" src="http://www.youtube.com/embed/dktgp95_L3o?rel=0" frameborder="0"></iframe>
+                <h4>Take the Quiz after the Orientation Video above</h4><br/>
+                <h:form>
+                <h:outputText value="Click here to take the quiz: "/>
+                <h:commandLink value="Take Quiz" action="quiz?faces-redirect=true"/>
+                </h:form>
+            </div></center>
+    </ui:define>
+
+</ui:composition>

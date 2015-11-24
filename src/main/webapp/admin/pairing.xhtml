@@ -1,0 +1,308 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:f="http://java.sun.com/jsf/core" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Partner Pairing</title>
+        <h:outputScript library="js" name="jquery-1.8.2.min.js"/>
+        <script>
+            $(document).ready(function() {
+                $('#dirlink').click(function() {
+                    $('#directions').slideToggle('fast');
+                });
+            });
+        </script>
+        <style>
+            #matchtable td {
+                text-align: center;
+            }
+            #one {
+                height: 170px;
+            }
+            #two {
+                width: 100px;
+            }
+            #childinfo {
+                width: 50%;
+            }
+            #studentinfo {
+                width: 50%;
+            }
+            .detailstable td {
+                border: none;
+            }
+            .left {
+                font-weight: bold;
+                text-align: right;
+            }
+            .times th {
+                padding-left: 3px;
+                padding-right: 3px;
+            }
+            .right {
+                text-align: left;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="leftNav">
+        <h:form>
+            <h:panelGrid columns="2" columnClasses="cols,cols" width="400" styleClass="menu">
+                <rich:panelMenu styleClass="menu" activeItem="pairing" >                        
+                    <rich:panelMenuItem leftIcon="disc" name="dashboard" action="dashboard?faces-redirect=true" label="Dashboard" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="query" action="search?faces-redirect=true" label="Manage Users" mode="server" />
+                    <rich:panelMenuItem leftIcon="disc" name="schedule" action="schedule?faces-redirect=true" label="Manage Pairs" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="pairing" label="Pair Partners" selectable="false"/>
+                    <rich:panelMenuItem leftIcon="disc" name="reminder" action="reminder?faces-redirect=true" mode="server" label="Reminders" />
+                    <rich:panelMenuItem leftIcon="disc" name="report" action="report?faces-redirect=true" mode="server" label="Reports" />
+                    <rich:panelMenuItem leftIcon="disc" name="edit-attendance" label="Edit Attendance" action="edit-attendance?faces-redirect=true" mode="server"/>
+                    <rich:panelMenuItem leftIcon="disc" name="settings" action="settings?faces-redirect=true" mode="server" label="Settings" />
+                    <rich:panelMenuItem leftIcon="disc" name="logout" action="#{userLogout.logoutAction()}" label="Logout" mode="server"/>
+                </rich:panelMenu>
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>Partner Pairing</h3>
+        </center>
+        <p>
+            <a id="dirlink" href="#"><b>Click For Directions</b></a>
+            <div id="directions">
+                1. Click <b>"Find Unpaired Children"</b> OR <b>"Find Unpaired Students"</b><br/>
+                2. Based on your choice, the unpaired students or children will be found<br/>
+                3. Select a child or student you wish to find matches for<br/>
+                4. Once selected, you are allowed to click <b>"Find Compatible Matches"</b><br/>
+                5. The compatible matches are found based on days and times and whether the child is "Special Needs"<br/>
+                6. Once you have found a correct pairing, click <b>"Pair Selection"</b> and confirm your choices
+                The form will refresh and the two you just paired will no longer appear as unpaired
+            </div>
+        </p>
+        <a4j:region>
+            <h:form id="pair_form">
+                <div id="matching">
+                    <center>
+                <table id="matchtable">
+                    <thead></thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <a4j:commandButton id="childbutton" actionListener="#{adminPairing.populateChildren()}" 
+                                                   execute="@this" value="Find Unpaired Children" render="@form" />
+                            </td>
+                            <td></td>
+                            <td>
+                                <a4j:commandButton id="studentbutton" action="#{adminPairing.populateStudents()}"
+                                                   execute="@this" value="Find Unpaired Students" render="@form" />
+                            </td>
+                        </tr>
+                        <tr id="one">
+                            <td>
+                                <a4j:outputPanel id="childpanel" >
+                                    <h:selectOneListbox id="childbox" size="10" value="#{adminPairing.selectedChild}"
+                                                        rendered="#{adminPairing.searched or not empty adminPairing.childList}">
+                                        <f:selectItems value="#{adminPairing.childList}" var="_child"
+                                                       itemLabel="#{_child.firstname} #{_child.lastname}"
+                                                       itemValue="#{_child.childID}"/>
+                                        <a4j:ajax event="change" listener="#{adminPairing.changeChild()}" execute="@this" render="@form" />
+                                    </h:selectOneListbox>
+                                </a4j:outputPanel>
+                            </td>
+                            <td id="two">
+                                <a4j:commandButton id="findbutton" action="#{adminPairing.find()}" execute="filters" value="Find Compatible Matches" render="@form"
+                                                   disabled="#{adminPairing.selectedChild eq -1 and adminPairing.selectedStudent eq -1}" />
+                                <table><tr><td>
+                                    <h:selectManyCheckbox id="filters" layout="pageDirection" value="#{adminPairing.filters}"
+                                                          disabled="#{adminPairing.selectedChild eq -1 and adminPairing.selectedStudent eq -1}">
+                                        <f:selectItem id="filter1" itemLabel="Search Paired" itemValue="all" />
+                                        <f:selectItem id="filter2" itemLabel="Filter Spec Ed" itemValue="spec" />
+                                        <f:selectItem id="filter3" itemLabel="Filter Lang Ed" itemValue="lang" />
+                                        <rich:tooltip showDelay="300" rendered="#{adminPairing.selectedChild ne -1}">
+                                            <p><b>Search Paired</b> searches for already paired students.</p>
+                                            <p><b>Filter Spec Ed</b> filters out students who are not Special Education.</p>
+                                            <p><b>Filter Lang Ed</b> filters out students who are not Language Specialized.</p>
+                                        </rich:tooltip>
+                                    </h:selectManyCheckbox>
+                                </td></tr></table>
+                            </td>
+                            <td>
+                                <a4j:outputPanel id="studentpanel" >
+                                    <h:selectOneListbox id="studentbox" size="10" value="#{adminPairing.selectedStudent}"
+                                                        rendered="#{adminPairing.searched or not empty adminPairing.studentList}">
+                                        <f:selectItems value="#{adminPairing.studentList}" var="_student"
+                                                       itemLabel="#{_student.firstname} #{_student.lastname}"
+                                                       itemValue="#{_student.studentID}"/>
+                                        <a4j:ajax listener="#{adminPairing.changeStudent()}" event="change" execute="@this" render="@form" />
+                                    </h:selectOneListbox>
+                                </a4j:outputPanel>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <h:outputLabel value="Select Day: " />
+                                <h:selectOneMenu id="daybox" value="#{adminPairing.day}" disabled="#{empty adminPairing.pmap}">
+                                    <f:selectItem itemLabel="Select Day" noSelectionOption="true" />
+                                    <f:selectItems value="#{adminPairing.pmap.keySet()}"/>
+                                    <a4j:ajax execute="@this" render="hourbox" event="change"/>
+                                </h:selectOneMenu><br/>
+                                <h:outputLabel value="Select Hour: " />
+                                <h:selectOneMenu id="hourbox" value="#{adminPairing.hour}" disabled="#{empty adminPairing.day}">
+                                    <f:selectItem itemLabel="Select Hour" noSelectionOption="true" />
+                                    <f:selectItems value="#{adminPairing.pmap[adminPairing.day]}"/>
+                                    <a4j:ajax execute="@this" render="pairbutton" event="change"/>
+                                </h:selectOneMenu>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <a4j:commandButton id="pairbutton" value="Pair Partners" action="#{adminPairing.pair()}" render="@form"
+                                                   disabled="#{empty adminPairing.hour}"
+                                                   onclick="return confirm('You are about to pair a student and child.\nPress Ok to confirm.');"
+                                                   oncomplete="alert('Pairing Complete\nEmail is being sent to participants\nRefreshing')"/>
+                            </td>
+                                
+                        </tr>
+                    </tbody>
+                </table>
+                </center>
+            </div> 
+            <hr/>
+            <h:panelGroup layout="block" id="information" styleClass="infodiv">
+                <center>
+                <h:panelGroup id="left" style="float:left; padding-left:10px;" rendered="#{not empty adminPairing.cdetail}">
+                    <h4>Child Details</h4>
+                <h:panelGrid cellpadding="2"  id="childdetails" rendered="#{not empty adminPairing.cdetail}" 
+                             columnClasses="left,right" columns="2" styleClass="detailstable">
+                    <h:outputText value="Name:"/>
+                    <h:outputText value="#{adminPairing.cdetail.firstname} #{adminPairing.cdetail.lastname}" />
+
+                    <h:outputText value="Gender:"/>
+                    <h:outputText value="#{adminPairing.cdetail.gender}"/>
+
+                    <h:outputText value="Special Needs:"/>
+                    <h:outputText value="#{adminPairing.cdetail.special_needs}"/>
+                    
+                    <h:outputText value="Language Needs:"/>
+                    <h:outputText value="#{adminPairing.cdetail.language_needs}"/>
+
+                    <h:outputText value="Parent/Guardian:"/>
+                    <h:outputText value="#{adminPairing.cdetail.parent_one}"/>
+                    
+                    
+                    <h:outputText value="Days and Times:"/>
+                    
+                
+                    <table class="times">
+                        <tr>
+                            <a4j:repeat value="#{adminPairing.cmap.keySet().toArray()}" var="keys">
+                                <th>
+                                <h:outputText value="#{keys}"/>
+                                </th>
+                            </a4j:repeat>
+                        </tr>
+                        <tr>
+                            <a4j:repeat value="#{adminPairing.cmap.keySet().toArray()}" var="key">
+                                <td style="text-align: center;">
+                                <ui:repeat value="#{adminPairing.cmap[key]}" var="list">
+
+                                        <h:outputText value="#{list}"/><br/>
+                                </ui:repeat>
+                                </td>
+                            </a4j:repeat>
+                        </tr>
+                    </table>
+                    
+                    <h:outputText value="Notes:" rendered="#{not empty adminPairing.cdetail.notes}"/>
+                    <h:outputText value="#{adminPairing.cdetail.notes}" rendered="#{not empty adminPairing.cdetail.notes}"/>
+                    
+                </h:panelGrid>
+                </h:panelGroup>
+                
+                <h:panelGroup id="right" style="float:right; padding-right: 10px;" rendered="#{not empty adminPairing.sdetail}">
+                    <h4>Student Details</h4>
+                    <h:panelGrid cellpadding="2" rendered="#{not empty adminPairing.sdetail}" 
+                                 columnClasses="left,right" columns="2" styleClass="detailstable">
+                    <h:outputText value="Name:"/>
+                    <h:outputText value="#{adminPairing.sdetail.firstname} #{adminPairing.sdetail.lastname}" />
+
+                    <h:outputText value="Gender:"/>
+                    <h:outputText value="#{adminPairing.sdetail.gender}"/>
+
+                    <h:outputText value="College:" />
+                    <h:outputText value="#{adminPairing.sdetail.college}"/>
+                    
+                    <h:outputText value="Special Ed:" />
+                    <h:outputText value="#{adminPairing.sdetail.spec_ed}"/>
+                    
+                    <h:outputText value="Bi-lingual Ed:" />
+                    <h:outputText value="#{adminPairing.sdetail.lang_ed}"/>
+                    
+                    <h:outputText value="Would Like Two Partners:" />
+                    <h:outputText value="#{adminPairing.sdetail.two_chldn}"/>
+                    
+                    <h:outputText value="Student's Pair Count:"/>
+                    <h:outputText style="color: red; font-weight: bold;" 
+                                  value="#{adminPairing.pairsCount}"/>
+                    <h:outputText value="Current Schedule:" rendered="#{not empty adminPairing.sessions}"/>
+                    <h:dataTable value="#{adminPairing.sessions}" var="_session" border="1"
+                                 rendered="#{not empty adminPairing.sessions}">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Child"/>
+                            </f:facet>
+                            <h:outputText value="#{_session.child.firstname} #{_session.child.lastname}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Day"/>
+                            </f:facet>
+                            <h:outputText value="#{_session.day}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Hour"/>
+                            </f:facet>
+                            <h:outputText value="#{_session.hour}"/>
+                        </h:column>
+                    </h:dataTable>
+                    
+                    <h:outputText value="Days and Times:"/>
+                    <table class="times">
+                        <tr>
+                            <a4j:repeat value="#{adminPairing.smap.keySet().toArray()}" var="keys">
+                                <th>
+                                <h:outputText value="#{keys}"/>
+                                </th>
+                            </a4j:repeat>
+                        </tr>
+                        <tr>
+                            <a4j:repeat value="#{adminPairing.smap.keySet().toArray()}" var="key">
+                                <td style="text-align: center;">
+                                <ui:repeat value="#{adminPairing.smap[key]}" var="list">
+
+                                        <h:outputText value="#{list}"/><br/>
+                                </ui:repeat>
+                                </td>
+                            </a4j:repeat>
+                        </tr>
+                    </table>
+                    
+                    <h:outputText value="Notes:" rendered="#{not empty adminPairing.sdetail.notes}"/>
+                    <h:outputText value="#{adminPairing.sdetail.notes}" rendered="#{not empty adminPairing.sdetail.notes}" />
+                    
+                </h:panelGrid>  
+                </h:panelGroup>
+                </center>
+            </h:panelGroup>
+        </h:form>
+        </a4j:region>
+    </ui:define>
+</ui:composition>

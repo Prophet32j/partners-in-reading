@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/child-template.xhtml"
+                xmlns:a4j="http://richfaces.org/a4j">
+
+    <ui:define name="htmlHead">
+        <title>Child Registration Page</title>
+        <style>
+            .left {
+                text-align: right;
+                vertical-align: top;
+            }
+            .required {
+                color: red;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="reg_form">
+            <center>
+                <h3>Please Enter Your Child's Information</h3>
+                <h:panelGrid columns="2" columnClasses="tableLeft, tableRight">
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="First Name: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter your first name"
+                                 id="first" value="#{childRegistration.newChild.firstname}" >
+                        <f:validateLength minimum="2" maximum="25" />
+                    </h:inputText>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Last Name: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter your last name"
+                                 id="last" value="#{childRegistration.newChild.lastname}" >
+                        <f:validateLength minimum="2" maximum="25" />
+                    </h:inputText>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Gender: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu id="gender" value="#{childRegistration.newChild.gender}" required="true"
+                                      requiredMessage="Please select your gender">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Male" id="gen_male" itemValue="m" />
+                        <f:selectItem itemLabel="Female" id="gen_female" itemValue="f" />
+                    </h:selectOneMenu>
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Home Phone: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter a home phone number"
+                                 id="homephone" value="#{childRegistration.newChild.homephone}" 
+                                 validator="#{phoneValidator.validatePhone}" />
+
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Cell Phone: " />
+                    </h:panelGroup>
+                    <h:inputText required="true" requiredMessage="Please enter a cell phone numer"
+                                 id="cellphone" value="#{childRegistration.newChild.cellphone}"
+                                 validator="#{phoneValidator.validatePhone}" />
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Age: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu id="age" value="#{childRegistration.newChild.age}" required="true"
+                                     requiredMessage="Please select your child's age">
+                        <f:selectItems value="#{constants.ages}" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Grade: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{childRegistration.newChild.grade}" required="true"
+                                 requiredMessage="Please enter the child's grade." id="grade">
+                        <f:selectItems value="#{constants.grades}" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Primary Parent/Guardian: " />
+                    </h:panelGroup>
+                    <h:inputText value="#{childRegistration.newChild.parent_one}" required="true"
+                                 requiredMessage="Please enter the primary parent's name" id="parent1" />
+                    
+                    <h:outputLabel value="Secondary Parent/Guardian: " />
+                    <h:inputText value="#{childRegistration.newChild.parent_two}" id="parent2" />
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Special Needs: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{childRegistration.newChild.special_needs}" id="spec_needs" 
+                            required="true" requiredMessage="Please select if your child has a special need" >
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Language Needs: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{childRegistration.newChild.language_needs}" id="lang_needs" 
+                            required="true" requiredMessage="Please select if your child has a language need" >
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:panelGroup>
+                        <h:outputText value="*" styleClass="required"/>
+                        <h:outputLabel value="Are You Requesting a Specific Partner: " />
+                    </h:panelGroup>
+                    <h:selectOneMenu value="#{childRegistration.hasReqPartner}" required="true"
+                                     requiredMessage="Please indicate if you have a requested partner">
+                        <f:selectItem itemLabel="Select" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Yes" itemValue="true" />
+                        <f:selectItem itemLabel="No" itemValue="false" />
+                    </h:selectOneMenu>
+                    
+                    <h:outputLabel value="Personal Notes About Your Child: " />
+                    <h:inputTextarea value="#{childRegistration.newChild.notes}" id="notes" />
+                </h:panelGrid>
+                <div id="buttons">
+                    
+                    <h:commandButton value="Next" action="#{childRegistration.register()}" id="button" />
+                    <input type="reset" value="Reset" />
+                    <h:messages id="messages" />
+                    
+                </div>
+            </center>
+            
+        </h:form>
+    </ui:define>
+
+</ui:composition>

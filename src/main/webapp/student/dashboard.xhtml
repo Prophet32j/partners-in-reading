@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../resources/templates/student-template.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                xmlns:rich="http://richfaces.org/rich">
+
+    <ui:define name="htmlHead">
+        <title>Partners In Reading - Student Dashboard</title>
+    </ui:define>
+
+    <ui:define name="content">
+        <center>
+            <h3>#{student.firstname} #{student.lastname}</h3>
+            <h4>Student Dashboard</h4>
+            
+            <br></br><br></br>
+            <h:panelGrid columnClasses="tableLeft,tableRight" columns="2" >
+                <h:outputText value="Last Login:"/>
+                <h:outputText value="#{user.last_login}" />
+                
+                <h:outputText value="First Name:" />
+                <h:outputText value="#{student.firstname}" />
+
+                <h:outputText value="Last Name:" />
+                <h:outputText value="#{student.lastname}" />
+
+                <h:outputText value="Email:" />
+                <h:outputText value="#{student.email}" />
+
+                <h:outputText value="College:" />
+                <h:outputText value="#{student.college}" />
+
+                <h:outputText value="Cell Phone:" />
+                <h:outputText value="#{student.cellphone}" />
+
+                <h:outputText value="Home Phone:" />
+                <h:outputText value="#{student.homephone}" />
+
+                <h:outputText value="Gender:" />
+                <h:outputText value="#{student.gender}" />
+                
+                <h:outputText value="Would Like Two Partners:" />
+                <h:outputText value="#{student.two_chldn}" />
+                
+                <h:outputText value="Orientation Complete:" />
+                <h:outputText value="#{student.ortn_complete}" />
+                
+                <h:outputText value="Background Check Complete:" />
+                <h:outputText value="#{student.bckgrnd_check_complete}" />
+
+                <h:outputText value="Notes:" />
+                <h:outputText value="#{student.notes}" />
+
+                <h:outputText value="Availability:"/>
+                <table class="times">
+                    <tr>
+                        <a4j:repeat value="#{student.daymap.keySet().toArray()}" var="keys">
+                            <th>
+                                <h:outputText value="#{keys}"/>
+                            </th>
+                        </a4j:repeat>
+                    </tr>
+                    <tr>
+                        <a4j:repeat value="#{student.daymap.keySet().toArray()}" var="key">
+                            <td style="text-align: center;">
+                                <ui:repeat value="#{student.daymap[key]}" var="list">
+                                    <h:outputText value="#{list}"/><br/>
+                                </ui:repeat>
+                            </td>
+                        </a4j:repeat>
+                    </tr>
+                </table>
+            </h:panelGrid>
+        </center>
+    </ui:define>
+
+</ui:composition>

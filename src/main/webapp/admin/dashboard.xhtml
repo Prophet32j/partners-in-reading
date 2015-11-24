@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:rich="http://richfaces.org/rich"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="./../resources/templates/admin-template.xhtml"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="htmlHead">
+        <title>Admin: Dashboard</title>
+        <style>
+            .important {
+                color: #D20005
+            }
+            ul.skills {
+                padding: 0px;
+                padding-left: 15px;
+                margin: 0px;
+            }
+            ul.skills li span {
+                position: relative;
+                left: -8px;
+            }
+        </style>
+    </ui:define>       
+
+    <ui:define name="content">
+        <h:form>
+        <center>
+        <h3>Administrator Dashboard</h3>
+        <br/>
+        <h:panelGroup id="pendpanel" rendered="#{not empty adminDashboard.pendlist}" >
+            <h4 class="important">Pending Pairs</h4>
+            <h:dataTable value="#{adminDashboard.pendlist}" var="sess" border="1" 
+                         style="text-align: center; " cellpadding="3" cellspacing="3" >
+                <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Student"/>
+                </f:facet>
+                <h:commandLink style="font-size: 110%" value="#{sess.student.firstname} #{sess.student.lastname}" 
+                               action="#{studentViewer.view(sess.student.email)}" target="_blank"/>
+                </h:column>
+                <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Skills"/>
+                </f:facet>
+                    <ul class="skills">
+                        <ui:fragment rendered="#{sess.student.spec_ed}">
+                            <li><span>Spec Ed</span></li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{sess.student.lang_ed}">
+                            <li><span>Lang Ed</span></li>
+                        </ui:fragment>
+                    </ul>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Child"/>
+                    </f:facet>
+                    <h:commandLink style="font-size: 110%" value="#{sess.child.firstname} #{sess.child.lastname}" 
+                                   action="#{childViewer.view(sess.child.childID)}" target="_blank"/>
+                </h:column>
+                <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Needs"/>
+                </f:facet>
+                    <ul class="skills">
+                        <ui:fragment rendered="#{sess.child.special_needs}">
+                            <li><span>Spec</span></li>
+                        </ui:fragment>
+                        <ui:fragment rendered="#{sess.child.language_needs}">
+                            <li><span>Lang</span></li>
+                        </ui:fragment>
+                    </ul>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Day"/>
+                    </f:facet>
+                    <h:outputText value="#{sess.day}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Time"/>
+                    </f:facet>
+                    <h:outputText value="#{sess.hour}"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Accept"/>
+                    </f:facet>
+                    <a4j:commandButton value="Accept" action="#{adminDashboard.accept(sess)}" render="@form" 
+                                       onclick="return confirm('You are about to accept a pairing\nPress Ok to confirm')"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="Reject"/>
+                    </f:facet>
+                    <a4j:commandButton value="Reject" action="#{adminDashboard.reject(sess)}" render="@form" 
+                                       onclick="return confirm('You are about to reject a pairing\nPress Ok to confirm')"/>
+                </h:column>
+            </h:dataTable>
+            <br/>
+            <a4j:commandButton value="Accept All" action="#{adminDashboard.acceptAll()}" render="@form"
+                               onclick="return confirm('You are about to ACCEPT ALL pending pairs\nPress Ok to confirm')"/>
+            <a4j:commandButton value="Reject All" action="#{adminDashboard.rejectAll()}" render="@form"
+                               onclick="return confirm('You are about to REJECT ALL pending pairs\nPress Ok to confirm')"/>
+        </h:panelGroup>
+        <br/>
+        <br/>
+        <h:panelGroup id="unpaired" >
+            <h4 class="important">Current Unpaired Children</h4>
+            <h:panelGroup id="allpaired" rendered="#{empty adminDashboard.unpaired}" >
+                <h5>All Children Paired or Pending Paired!</h5>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty adminDashboard.unpaired}" >
+                <h:dataTable id="childtable" value="#{adminDashboard.unpaired}" var="c" 
+                             border="1" styleClass="inline">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email" />
+                        </f:facet>
+                        <h:outputText value="#{c.email}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Last Name" />
+                        </f:facet>
+                        <h:outputText value="#{c.lastname}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="First Name" />
+                        </f:facet>
+                        <h:outputText value="#{c.firstname}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Details" />
+                        </f:facet>
+                        <h:commandLink value="Click Here" action="#{childViewer.view(c.childID)}" id="detailslink" target="_blank" />
+                    </h:column>
+                </h:dataTable>
+            </h:panelGroup>
+        </h:panelGroup>
+        <br/><br/>
+        <h:panelGroup id="backgrounds" >
+            <h4 class="important">Incomplete Background Checks</h4>
+            <h:panelGroup id="bc_done" rendered="#{empty adminDashboard.backgrounds}" >
+                <h5>All Background Checks Complete!</h5>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{not empty adminDashboard.backgrounds}">
+                <h:dataTable value="#{adminDashboard.backgrounds}" var="s" border="1">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Email"/>
+                        </f:facet>
+                        <h:outputText value="#{s.email}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Last Name" />
+                        </f:facet>
+                        <h:outputText value="#{s.lastname}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="First Name" />
+                        </f:facet>
+                        <h:outputText value="#{s.firstname}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Details" />
+                        </f:facet>
+                        <h:commandLink value="Click Here" action="#{studentViewer.view(s.email)}" id="detailslink" target="_blank" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Mark Complete" />
+                        </f:facet>
+                        <h:selectBooleanCheckbox value="#{student.bckgrnd_check_complete}"/>
+                    </h:column>
+                </h:dataTable>
+                <a4j:commandButton value="Submit Marked" action="#{adminDashboard.markComplete()}" render="@form"/>
+            </h:panelGroup>
+        </h:panelGroup>
+        </center>
+        </h:form>
+    </ui:define>
+</ui:composition>

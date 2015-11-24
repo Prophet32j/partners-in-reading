@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:a4j="http://richfaces.org/a4j"
+                template="./../resources/templates/search-template.xhtml">
+
+    <ui:define name="head">
+        <h:outputStylesheet library="css" name="resultLayout.css" />
+        <title>Details For: #{childViewer.child.firstname} #{childViewer.child.lastname}</title>
+    </ui:define>
+    
+    <ui:define name="top">
+        <h3>Details For</h3>
+        <h5>#{childViewer.child.firstname} #{childViewer.child.lastname}</h5>
+        <h:graphicImage id="image"
+                        width ="100"
+                        height="100"
+                        url="http://www.clker.com/cliparts/5/9/4/c/12198090531909861341man%20silhouette.svg.med.png">
+        </h:graphicImage>
+        <!--If we are able to find a WS to store pictures on-->
+    </ui:define>
+    
+    <ui:define name="content">
+        <h:panelGrid columns="2" columnClasses="tableLeft, tableRight" >
+            <h:outputText value="Email:" />
+            <h:outputText value="#{childViewer.child.email}" />
+            
+            <h:outputText value="First Name:" />
+            <h:outputText value="#{childViewer.child.firstname}" />
+            
+            <h:outputText value="Last Name:" />
+            <h:outputText value="#{childViewer.child.lastname}" />
+            
+            <h:outputText value="Cell Phone:" />
+            <h:outputText value="#{childViewer.child.cellphone}" />
+            
+            <h:outputText value="Home Phone:" />
+            <h:outputText value="#{childViewer.child.homephone}" />
+            
+            <h:outputText value="Gender:" />
+            <h:outputText value="#{childViewer.child.gender}" />
+            
+            <h:outputText value="Requested Partner:" />
+            <h:outputText value="#{childViewer.partner.firstName} #{childViewer.partner.lastName}" 
+                          rendered="#{not empty childViewer.partner}" />
+            <h:outputText value="" rendered="#{empty childViewer.partner}" />
+            
+            <h:outputText value="Requested Partner Phone:" />
+            <h:outputText value="#{childViewer.partner.phone}" rendered="#{not empty childViewer.partner}" />
+            <h:outputText value="" rendered="#{empty childViewer.partner}" />
+            
+            <h:outputText value="Age:" />
+            <h:outputText value="#{childViewer.child.age}" />
+            
+            <h:outputText value="Grade:" />
+            <h:outputText value="#{childViewer.child.grade}" />
+            
+            <h:outputText value="Special Needs:" />
+            <h:outputText value="#{childViewer.child.special_needs}" />
+            
+            <h:outputText value="Language Needs:" />
+            <h:outputText value="#{childViewer.child.language_needs}" />
+            
+            <h:outputText value="Primary Parent/Guardian:" />
+            <h:outputText value="#{childViewer.child.parent_one}" />
+            
+            <h:outputText value="Secondary Parent/Guardian:" />
+            <h:outputText value="#{childViewer.child.parent_two}" />
+            
+            <h:outputText value="Notes:" />
+            <h:outputText value="#{childViewer.child.notes}" />
+            
+            <h:outputText value="Paired Student:" />
+            <h:outputText value="#{childViewer.partnerSession.student.firstname} #{childViewer.partnerSession.student.lastname}" 
+                          rendered="#{not empty childViewer.partnerSession}"/>
+            <h:outputText value="Child Not Paired" rendered="#{empty childViewer.partnerSession and empty childViewer.partner}" style="color: red" />
+            <h:outputText value="See Requested Partner" rendered="#{not empty childViewer.partner}" style="color: red" />
+            
+            <h:outputText value="Session Time:" />
+            <h:outputText value="#{childViewer.partnerSession.day} at #{childViewer.partnerSession.hour}" 
+                          rendered="#{not empty childViewer.partnerSession}"/>
+            <h:outputText value="Child Not Paired" rendered="#{empty childViewer.partnerSession and empty childViewer.partner}" style="color: red" />
+            <h:outputText value="See Requested Partner" rendered="#{not empty childViewer.partner}" style="color: red" />
+            
+            <h:outputText value="Availability:" />
+            <table class="times">
+                <tr>
+                    <a4j:repeat value="#{childViewer.child.daymap.keySet().toArray()}" var="keys">
+                        <th>
+                        <h:outputText value="#{keys}"/>
+                        </th>
+                    </a4j:repeat>
+                </tr>
+                <tr>
+                    <a4j:repeat value="#{childViewer.child.daymap.keySet().toArray()}" var="key">
+                        <td style="text-align: center;">
+                        <ui:repeat value="#{childViewer.child.daymap[key]}" var="list">
+
+                                <h:outputText value="#{list}"/><br/>
+                        </ui:repeat>
+                        </td>
+                    </a4j:repeat>
+                </tr>
+            </table>
+        </h:panelGrid>
+    </ui:define>
+
+</ui:composition>
