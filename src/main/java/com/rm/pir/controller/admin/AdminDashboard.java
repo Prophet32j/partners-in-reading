@@ -130,12 +130,15 @@ public class AdminDashboard implements Serializable {
     
     public void markComplete() {
         for (Student student : backgrounds) {
-            try {
-                student.setBckgrnd_check_complete(true);
-                sdao.updateBackgroundCheck(student);
-            } catch (SQLException ex) {
-                Logger.getLogger(AdminDashboard.class.getName()).log(Level.SEVERE, null, ex);
+            if (student.isBckgrnd_check_complete()) {
+               try {
+//                    student.setBckgrnd_check_complete(true);
+                    sdao.updateBackgroundCheck(student);
+                } catch (SQLException ex) {
+                    Logger.getLogger(AdminDashboard.class.getName()).log(Level.SEVERE, null, ex);
+                }                 
             }
+            
         }
         try {
             findIncompleteBackgrounds();

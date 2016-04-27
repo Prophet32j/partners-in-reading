@@ -40,18 +40,18 @@ public class MailSender {
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
 //                props.put("mail.smtp.starttls.enable", "true");
-                props.setProperty("mail.smtp.host", "smtp.mandrillapp.com");
+                props.setProperty("mail.smtp.host", "smtp.sendgrid.net");
                 props.setProperty("mail.smtp.port", "587");
 //                props.setProperty("mail.smtp.ssl.trust", "smtp.mandrillapp.com");
-                props.setProperty("mail.smtp.user", Constants.ADMIN_MANDRILL_EMAIL);
+                props.setProperty("mail.smtp.user", Constants.ADMIN_SENDGRID_EMAIL);
                 props.setProperty("mail.transport.protocol", "smtp");
                 
                 Session session = Session.getInstance(props,
                         new javax.mail.Authenticator() {
                             protected PasswordAuthentication getPasswordAuthentication() {
                                 return new PasswordAuthentication(
-                                        Constants.ADMIN_MANDRILL_EMAIL, 
-                                        Constants.ADMIN_MANDRILL_EMAIL_PASS);
+                                        Constants.ADMIN_SENDGRID_EMAIL, 
+                                        Constants.ADMIN_SENDGRID_EMAIL_PASS);
                             }
                         });
 //                        session.setDebug(true);
