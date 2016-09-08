@@ -190,9 +190,12 @@ public class AdminPairing implements Serializable {
                                         "SELECT studentid "
                                         + "FROM normal_partner.student s "
                                         + "WHERE s.studentid NOT IN "
+                                        + "(SELECT studentid FROM normal_partner.pairs "
+                                        + "UNION "
+                                        + "SELECT studentid from normal_partner.pending) "
+                                        + "AND s.studentid IN "
                                         + "(SELECT studentid "
-                                        + "FROM normal_partner.pairs, "
-                                        + "normal_partner.pending) "
+                                        + "FROM normal_partner.availability_student)"
                                         + "AND s.ortn_complete")) {
                 while (rs.next()) {
                     //populate the child object from the DAO
@@ -244,11 +247,12 @@ public class AdminPairing implements Serializable {
                                     studentList.add(student);
                                 }
                                 else
-                                    for (int j=0; i<studentList.size(); i++) {
-                                        if (studentList.get(i).getStudentID() == student.getStudentID())
-                                            continue;
+                                    for (int j=0; j<studentList.size(); j++) {
+                                        if (studentList.get(j).getStudentID() == student.getStudentID())
+                                            break;
                                         if (j == studentList.size()-1) {
                                             studentList.add(student);
+                                            break;
                                         }
                                     }
                             }
@@ -283,11 +287,12 @@ public class AdminPairing implements Serializable {
                                     childList.add(child);
                                 }
                                 else
-                                    for (int j=0; i<childList.size(); i++) {
-                                        if (childList.get(i).getChildID() == child.getChildID())
-                                            continue;
+                                    for (int j=0; j<childList.size(); j++) {
+                                        if (childList.get(j).getChildID() == child.getChildID())
+                                            break;
                                         if (j == childList.size()-1) {
                                             childList.add(child);
+                                            break;
                                         }
                                     }
                             }
