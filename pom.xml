@@ -81,12 +81,12 @@
             <version>2.2</version>
         </dependency>
         
-        <!-- OmniFaces -->
-<!--        <dependency>
-            <groupId>org.omnifaces</groupId>
-            <artifactId>omnifaces</artifactId>
-            <version>1.6</version>
-        </dependency>-->
+        <!-- SendGrid API -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>4.0.1</version>
+        </dependency>
             
     </dependencies>
 
