@@ -2,7 +2,7 @@ package com.rm.pir.controller;
 
 import com.rm.pir.dao.interfaces.UserDAO;
 import com.rm.pir.model.User;
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.utilities.Constants;
 import java.sql.SQLException;
 import java.util.Map;
@@ -102,7 +102,7 @@ public class ActivationController {
                 + "Partners In Reading Staff <br>"
                 + "Normal Public Library";
         
-        new MailSender(to,subject,body).send();
+        new Mailer(to,subject,body).send();
     }
 
     /**

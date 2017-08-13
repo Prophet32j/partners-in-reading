@@ -1,7 +1,7 @@
 package com.rm.pir.automation;
 
 import com.rm.pir.utilities.Constants;
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,7 +64,7 @@ public class AutoPair implements Runnable {
                 String to = Constants.ADMIN_NPL_EMAIL;
                 String subject = "Partners In Reading - Pending Pairs Need Approval";
                 String body = "You have Partner Pairs that need Approval";
-                new MailSender(to, subject, body).send();
+                new Mailer(to, subject, body).send();
             }
         } catch(Exception ex) { 
             Logger.getLogger(AutoPair.class.getName()).log(Level.SEVERE, null, ex);

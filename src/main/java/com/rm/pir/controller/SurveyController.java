@@ -1,6 +1,6 @@
 package com.rm.pir.controller;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.model.Survey;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -135,7 +135,7 @@ public class SurveyController {
             + "</body></center>"
    + "</html>";
                 
-        MailSender email = new MailSender(to,subject,body);
+        Mailer email = new Mailer(to,subject,body);
         email.send();
         
         return "survey-confirmation";
