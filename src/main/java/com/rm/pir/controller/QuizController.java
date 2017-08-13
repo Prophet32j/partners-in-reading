@@ -1,6 +1,6 @@
 package com.rm.pir.controller;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.StudentDAO;
 import com.rm.pir.model.Student;
 import java.sql.SQLException;
@@ -144,7 +144,7 @@ public class QuizController {
             + "</body></center>"
    + "</html>";
                 
-        MailSender email = new MailSender(to,subject,body);
+        Mailer email = new Mailer(to,subject,body);
         email.send();
     }
             

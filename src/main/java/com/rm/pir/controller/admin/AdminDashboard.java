@@ -1,6 +1,6 @@
 package com.rm.pir.controller.admin;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.ChildDAO;
 import com.rm.pir.dao.interfaces.PendingDAO;
 import com.rm.pir.dao.interfaces.StudentDAO;
@@ -150,7 +150,11 @@ public class AdminDashboard implements Serializable {
     public void sendConfirmation(Session session) {
         Student ps = session.getStudent();
         Child pc = session.getChild();
-        String to = ps.getEmail()+","+pc.getEmail();
+        
+        List<String> to = new ArrayList<>();
+        to.add(ps.getEmail());
+        to.add(pc.getEmail());
+        
         String subject = "Partners In Reading - You have been paired!";
         String body =
                 "<html>"
@@ -171,7 +175,7 @@ public class AdminDashboard implements Serializable {
                 + "Time: " + session.getHour()
                 + "</body></center>"
                 + "</html>";
-        new MailSender(to, subject, body).send();
+        new Mailer(to, subject, body).send();
     }
 
     public List<Session> getPendlist() {

@@ -1,6 +1,6 @@
 package com.rm.pir.controller;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.UserDAO;
 import com.rm.pir.model.User;
 import com.rm.pir.utilities.Constants;
@@ -100,7 +100,7 @@ public class PasswordController implements Serializable{
                 + "Partners In Reading Staff <br>"
                 + "Normal Public Library";
                 
-        new MailSender(email,subject,body).send();
+        new Mailer(email,subject,body).send();
     }
         
     public String getPassword() {

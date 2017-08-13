@@ -1,6 +1,6 @@
 package com.rm.pir.controller.admin;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.ChildDAO;
 import com.rm.pir.dao.interfaces.StudentDAO;
 import com.rm.pir.utilities.Constants;
@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class AdminReminder implements Serializable {
     private String reminder;
     private String body;
     private String subject;
-    private String to;
+    private List<String> to;
     private boolean sending;
     
     @PostConstruct
@@ -86,10 +87,10 @@ public class AdminReminder implements Serializable {
     public void sendEmail() {
         try {
             sending = true;
-            MailSender mailer;
+            Mailer mailer;
             //get the correct emails based on user choice
             to = getEmailAddresses();
-            mailer = new MailSender(to, getSubject(), body);
+            mailer = new Mailer(to, getSubject(), body);
             mailer.send();
             
             recipients = null;
@@ -102,19 +103,15 @@ public class AdminReminder implements Serializable {
         }
     }
     
-    private String getEmailAddresses() throws SQLException {
-        String all = "";
+    private List<String> getEmailAddresses() throws SQLException {
+        List<String> all = new ArrayList<>();
         if (recipients.equals("students")) {
             List<String> emails = sdao.findAllAvailableStudentEmails();
-            for (int i=0; i<emails.size(); i++) {
-                all += emails.get(i) + ",";
-            }
-        }else if (recipients.equals("children")) {
+            all.addAll(emails);
+        } else if (recipients.equals("children")) {
             List<String> emails = cdao.findAllAvailableChildEmails();
-            for (int i=0; i<emails.size(); i++) {
-                all += emails.get(i) + ",";
-            }
-        }else if (recipients.equals("pairs")) {
+            all.addAll(emails);
+        } else if (recipients.equals("pairs")) {
             try (Connection con = ds.getConnection(); 
                     PreparedStatement find = con.prepareStatement(
                                     "select distinct s.email " +
@@ -126,9 +123,9 @@ public class AdminReminder implements Serializable {
                                     "on s.studentid=p.studentid"); 
                     ResultSet rs = find.executeQuery()) {
                 while (rs.next()) 
-                    all += rs.getString("email") + ",";
+                    all.add(rs.getString("email"));
             }
-        }else if (recipients.equals("all")) {
+        } else if (recipients.equals("all")) {
             try (Connection con = ds.getConnection(); 
                     PreparedStatement find = con.prepareStatement(
                                     "select distinct email " +
@@ -142,11 +139,11 @@ public class AdminReminder implements Serializable {
                                     "(SELECT childid FROM normal_partner.availability_child)"); 
                     ResultSet rs = find.executeQuery()) {
                 while (rs.next()) {
-                    all += rs.getString("email") + ",";
+                    all.add(rs.getString("email"));
                 }
             }
         }
-        return all.substring(0, all.length()-1);
+        return all;
     }
 
     public String getRecipients() {

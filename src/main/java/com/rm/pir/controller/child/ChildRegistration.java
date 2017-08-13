@@ -1,7 +1,7 @@
 package com.rm.pir.controller.child;
 
 import com.rm.pir.controller.student.StudentPartner;
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.ChildDAO;
 import com.rm.pir.model.Child;
 import com.rm.pir.model.Family;
@@ -117,7 +117,7 @@ public class ChildRegistration {
                + "</body></center>"
             + "</html>";
                 
-        MailSender email = new MailSender(to,subject,body);
+        Mailer email = new Mailer(to,subject,body);
         email.send();
     }
 

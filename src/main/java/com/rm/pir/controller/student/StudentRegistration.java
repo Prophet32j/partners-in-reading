@@ -1,6 +1,6 @@
 package com.rm.pir.controller.student;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.StudentDAO;
 import com.rm.pir.model.Student;
 import com.rm.pir.model.User;
@@ -123,7 +123,7 @@ public class StudentRegistration {
                 + "</table>"
                 + "</center></body>"
                 + "</html>";
-        MailSender email = new MailSender(to, subject, body);
+        Mailer email = new Mailer(to, subject, body);
         email.send();
     }
 
@@ -180,7 +180,7 @@ public class StudentRegistration {
                 + "</body>"
                 + "</html>";
                 
-        MailSender email = new MailSender(to, subject, body);
+        Mailer email = new Mailer(to, subject, body);
         email.send(); 
     }
 

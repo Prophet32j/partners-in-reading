@@ -1,12 +1,14 @@
 package com.rm.pir.automation;
 
 import com.rm.pir.model.Settings;
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.utilities.Constants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.InitialContext;
@@ -21,7 +23,7 @@ public class EmailReminder implements Runnable {
     private DataSource ds;
     
     private String emailBody;
-    private String to;
+    private List<String> to;
     private String subject;
     private Settings settings;
     
@@ -46,7 +48,6 @@ public class EmailReminder implements Runnable {
         finally {
             try {
                 con.close();
-//                Logger.getLogger(EmailReminder.class.getName()).log(Level.INFO, "EmailReminder closing con");
             } catch (SQLException ex) {
                 Logger.getLogger(EmailReminder.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -85,9 +86,9 @@ public class EmailReminder implements Runnable {
                              + "(SELECT studentid FROM normal_partner.student_requested_partner)"); 
                         ResultSet rs = find.executeQuery()) {
                     // get all email addresses
-                    to = "";
+                    to = new ArrayList<>();
                     while (rs.next()) {
-                        to += rs.getString("email") + ",";
+                        to.add(rs.getString("email"));
                     }
                 }
             } catch (SQLException ex) {
@@ -95,23 +96,19 @@ public class EmailReminder implements Runnable {
             }
         
             // make sure there are students to send emails to
-            if (to.equals(""))
-                return;
-
-            // take off last comma
-            to = to.substring(0, to.length()-1);
-
-            subject="Partners In Reading - Student Survey";
-            emailBody = "<html>"
-                    + "<body>"
-                    + "Hello and thank you for participating in this semester's "
-                    + "Normal Public Library Partners In Reading program.<br/>"
-                    + "Please complete the survey, provided by the link bellow, <br/>"
-                    +"<a href ='http://partners.normal-library.org/survey.xhtml'>http://partners.normal-library.org/survey.xhtml</a><br/>"
-                    + "Thanks again!<br/>"
-                    + "The Partners In Reading Team"
-                    + "</body></html>";
-            sendReminderEmails();
+            if (to.size() > 0) {
+                subject = "Partners In Reading - Student Survey";
+                emailBody = "<html>"
+                        + "<body>"
+                        + "Hello and thank you for participating in this semester's "
+                        + "Normal Public Library Partners In Reading program.<br/>"
+                        + "Please complete the survey, provided by the link bellow, <br/>"
+                        +"<a href ='http://partners.normal-library.org/survey.xhtml'>http://partners.normal-library.org/survey.xhtml</a><br/>"
+                        + "Thanks again!<br/>"
+                        + "The Partners In Reading Team"
+                        + "</body></html>";
+                sendReminderEmails();
+            }
         }
     }
     
@@ -124,7 +121,7 @@ public class EmailReminder implements Runnable {
                 && settings.getEndDate().isBeforeNow()
                 && (iDoW < 4 || iDoW == 7)) {
             try {
-                subject="Partners In Reading - Session Reminder";
+                subject = "Partners In Reading - Session Reminder";
                 emailBody = 
                         "<html>"
                         + "<body>"
@@ -150,7 +147,8 @@ public class EmailReminder implements Runnable {
                            ps.setString(1, "Tuesday");
                            try (ResultSet rs = ps.executeQuery()) {
                                while (rs.next()) {
-                                   to = rs.getString("semail") + "," + rs.getString("cemail");
+                                   to.add(rs.getString("semail"));
+                                   to.add(rs.getString("cemail"));
                                    emailBody = String.format(emailBody,
                                            rs.getString("sfn"),
                                            rs.getString("sln"),
@@ -168,7 +166,8 @@ public class EmailReminder implements Runnable {
                            ps.setString(1, "Wednesday");
                            try (ResultSet rs = ps.executeQuery()) {
                                while (rs.next()) {
-                                   to = rs.getString("semail") + "," + rs.getString("cemail");
+                                   to.add(rs.getString("semail"));
+                                   to.add(rs.getString("cemail"));
                                    emailBody = String.format(emailBody,
                                            rs.getString("sfn"),
                                            rs.getString("sln"),
@@ -186,7 +185,8 @@ public class EmailReminder implements Runnable {
                            ps.setString(1, "Thursday");
                            try (ResultSet rs = ps.executeQuery()) {
                                while (rs.next()) {
-                                   to = rs.getString("semail") + "," + rs.getString("cemail");
+                                   to.add(rs.getString("semail"));
+                                   to.add(rs.getString("cemail"));
                                    emailBody = String.format(emailBody,
                                            rs.getString("sfn"),
                                            rs.getString("sln"),
@@ -204,7 +204,8 @@ public class EmailReminder implements Runnable {
                            ps.setString(1, "Monday");
                            try (ResultSet rs = ps.executeQuery()) {
                                while (rs.next()) {
-                                   to = rs.getString("semail") + "," + rs.getString("cemail");
+                                   to.add(rs.getString("semail"));
+                                   to.add(rs.getString("cemail"));
                                    emailBody = String.format(emailBody,
                                            rs.getString("sfn"),
                                            rs.getString("sln"),
@@ -225,7 +226,7 @@ public class EmailReminder implements Runnable {
     }
     
     public void sendReminderEmails() {    
-        new MailSender(to,subject,emailBody).send();
+        new Mailer(to,subject,emailBody).send();
     }
     
     public String getEmailBody() {

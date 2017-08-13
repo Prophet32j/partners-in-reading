@@ -1,6 +1,6 @@
 package com.rm.pir.controller.admin;
 
-import com.rm.pir.utilities.MailSender;
+import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.ChildAvailDAO;
 import com.rm.pir.dao.interfaces.ChildDAO;
 import com.rm.pir.dao.interfaces.PairingDAO;
@@ -430,7 +430,7 @@ public class AdminPairing implements Serializable {
                 + "The Partners In Reading Team"
                 + "</center></body>"
                 + "</html>";
-        MailSender email = new MailSender(to, subject, body);
+        Mailer email = new Mailer(to, subject, body);
         email.send();
     }
     
