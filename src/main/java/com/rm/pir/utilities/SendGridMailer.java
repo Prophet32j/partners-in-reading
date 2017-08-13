@@ -23,6 +23,7 @@ public class SendGridMailer {
         
         Mail mail = new Mail();
         mail.setFrom(from);
+        mail.setSubject(subject);
         
         Personalization p = new Personalization();
         for (String r : recipients) {
