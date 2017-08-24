@@ -4,9 +4,7 @@
  */
 package com.rm.pir.controller.admin;
 
-import com.rm.pir.dao.interfaces.ChildDAO;
 import com.rm.pir.dao.interfaces.PairingDAO;
-import com.rm.pir.dao.interfaces.StudentDAO;
 import com.rm.pir.model.Session;
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -14,10 +12,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
+import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 
 @Named
 @ViewAccessScoped

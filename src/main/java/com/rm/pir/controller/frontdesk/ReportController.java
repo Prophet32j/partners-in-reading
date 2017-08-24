@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.WindowScoped;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
 
 @Named
 @WindowScoped

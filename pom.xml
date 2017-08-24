@@ -12,13 +12,14 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <deltaspike.version>1.8.0</deltaspike.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
+            <artifactId>javaee-web-api</artifactId>
+            <version>7.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -54,10 +55,19 @@
             <artifactId>richfaces-core-impl</artifactId>
             <version>4.3.2.Final</version>
         </dependency>
+        
         <dependency>
-            <groupId>org.apache.myfaces.extensions.cdi</groupId>
-            <artifactId>myfaces-extcdi-dist-jsf20</artifactId>
-            <version>0.9.5</version>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jsf-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-jsf-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>runtime</scope>
         </dependency>
         
         <!-- MySQL Driver -->

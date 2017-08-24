@@ -2,7 +2,6 @@ package com.rm.pir.controller.admin;
 
 import com.rm.pir.dao.interfaces.AttendanceDAO;
 import com.rm.pir.model.AttendanceReport;
-import com.rm.pir.model.Student;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.myfaces.extensions.cdi.core.api.scope.conversation.ViewAccessScoped;
+import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 
 @Named
 @ViewAccessScoped
