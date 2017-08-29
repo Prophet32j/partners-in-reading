@@ -7,7 +7,9 @@ package com.rm.pir.utilities;
 
 import com.sendgrid.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +28,8 @@ public class SendGridMailer {
         mail.setSubject(subject);
         
         Personalization p = new Personalization();
-        for (String r : recipients) {
+        // dedupe the list because it will error out the API call
+        for (String r : dedupe(recipients)) {
             p.addTo(new Email(r));
         }
         Content content = new Content("text/html", body);
@@ -41,12 +44,15 @@ public class SendGridMailer {
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
         } catch(IOException ex) {
-            Logger.getLogger(SendGridMailer.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            Logger logger = Logger.getLogger(SendGridMailer.class.getName());
+            logger.log(Level.WARNING, "Failed to send email: " + subject);
+            logger.log(Level.SEVERE, ex.getMessage(), ex);
         }
+    }
+    
+    private Set<String> dedupe(List<String> recipients) {
+        return new HashSet<>(recipients);
     }
     
 }
