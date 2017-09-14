@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -407,7 +408,7 @@ public class AdminPairing implements Serializable {
     }
     
     public void sendConfirmation(Student pairedStudent, Child pairedChild) {
-        String to = pairedStudent.getEmail() + "," + pairedChild.getEmail();
+        List<String> to = Arrays.asList(pairedStudent.getEmail(), pairedChild.getEmail());
         String subject = "Partners In Reading - You have been paired!";
         String body =
                 "<html>"
