@@ -3,17 +3,17 @@ package com.rm.pir.controller;
 import com.rm.pir.utilities.Mailer;
 import com.rm.pir.dao.interfaces.StudentDAO;
 import com.rm.pir.model.Student;
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 
 @Named
-@RequestScoped
-public class QuizController {
+@ViewAccessScoped
+public class QuizController implements Serializable {
 
     private String q1_a;
     private String q2_a;
@@ -24,27 +24,20 @@ public class QuizController {
     private String q7_a;
     private int numCorrect = 0;
     
-//    @Inject 
-//    private User user;
     @Inject
     private Student student;
     @Inject
     private StudentDAO dao;
     
-//    @PreDestroy
-//    public void destroy() {
-//        Logger.getLogger(QuizController.class.getName()).log(Level.INFO, "QuizController destoyed");
-//    }
-
     public String gradeQuiz() {
         //grade each of the quiz questions and increment numCorrect if the answer is correct
-        if (q1_a.equals("At the Children’s Information Desk")) 
+        if (q1_a.equals("At the Childrens Information Desk")) 
             numCorrect++;
         if (q2_a.equals("free time.")) 
             numCorrect++;
         if (q3_a.equals("has a chance to read out loud.")) 
             numCorrect++;
-        if (q4_a.equals("In the Children’s Department on the second floor of the library.")) 
+        if (q4_a.equals("In the Childrens Department on the second floor of the library.")) 
             numCorrect++;
         if (q5_a.equals("A coupon from a local business."))
             numCorrect++;
